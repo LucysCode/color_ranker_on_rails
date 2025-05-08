@@ -1,0 +1,19 @@
+<h1>Welcome to Color Ranker where you can rank ugly colors!</h1>
+<h2 style="text-align:center">Is this color ugly?</h2>
+
+
+<div class="color-box" style="background-color: <%= @hex_color %>;"></div>
+
+<p style="text-align:center">Color Code: <%= @hex_color %></p>
+
+<form method="get" action="/" style="text-align:center">
+  <button type="submit">Generate New Color</button>
+</form>
+
+<form method="get" style="text-align:center" style="text-align:center"> 
+  <button type="submit">Ugly</button>
+</form>
+
+<form method="get" style="text-align:center"> 
+  <button type="submit">Not ugly</button>
+</form>

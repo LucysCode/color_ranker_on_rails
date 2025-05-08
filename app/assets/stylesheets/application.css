@@ -1,4 +1,23 @@
-/*
+.color-box {
+    width: 200px;
+    height: 100px;
+    border: 2px solid black;
+    margin: 20px auto;
+    display: block;
+  }
+  
+  .center-text {
+    text-align: center;
+  }
+  
+  button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+  }
+
+  
+  /*
  * This is a manifest file that'll be compiled into application.css.
  *
  * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
