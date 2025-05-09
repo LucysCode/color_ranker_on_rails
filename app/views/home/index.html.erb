@@ -1,23 +1,43 @@
 <h1 style="text-align:center">Welcome to Color Ranker where you can rank ugly colors!</h1>
 <h2 style="text-align:center">Is this color ugly?</h2>
 
-<div style="text-align:center; margin-top: 20px;">
-  <form method="get" action="/">
-    <input type="hidden" name="new_color" value="true">
-    <button type="submit">Generate New Color</button>
+<% if @hex_color %>
+  <div style="text-align:center; margin-top: 20px;">
+    <form method="get" action="/">
+      <input type="hidden" name="new_color" value="true">
+      <button type="submit">Not sure, give me a new color</button>
+    </form>
+  </div>
+
+  <div class="color-box" style="background-color: <%= @hex_color %>; width: 200px; height: 200px; margin: 20px auto;"></div>
+
+  <p style="text-align:center">Color Code: <%= @hex_color %></p>
+
+  <div style="text-align:center;">
+    <button onclick="submitVote('ugly')">Ew, it&rsquo;s ugly</button>
+    <button onclick="submitVote('not_ugly')">I like this</button>
+  </div>
+<% end %>
+
+<% if flash[:notice] %>
+  <p style="color: red; text-align:center;"><%= flash[:notice] %></p>
+<% end %>
+
+<div style="text-align:center;">
+  <form method="post" action="/reset">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <button type="submit">Reset</button>
   </form>
 </div>
 
-<div class="color-box" style="background-color: <%= @hex_color %>;"></div>
-
-<p style="text-align:center">Color Code: <%= @hex_color %></p>
-
-<div style="text-align:center; margin-top: 20px;">
-  <div style="margin-top: 0px;">
-    <button onclick="submitVote('ugly')">Ugly</button>
-    <button onclick="submitVote('not_ugly')">Not Ugly</button>
+<% if @ugly_colors.present? %>
+  <h3 style="text-align:center; margin-top: 40px;">Top Ugly Colors</h3>
+  <div style="display:flex; justify-content:center; flex-wrap: wrap; gap: 10px;">
+    <% @ugly_colors.each do |color| %>
+      <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+    <% end %>
   </div>
-</div>
+<% end %>
 
 <script>
   function submitVote(vote) {
@@ -30,7 +50,7 @@
       body: JSON.stringify({ vote: vote })
     }).then(response => {
       if (response.ok) {
-        console.log(`Voted ${vote}`);
+        window.location.href = "/?new_color=true";
       } else {
         alert("Failed to submit vote.");
       }
