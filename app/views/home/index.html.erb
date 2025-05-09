@@ -1,19 +1,39 @@
-<h1>Welcome to Color Ranker where you can rank ugly colors!</h1>
+<h1 style="text-align:center">Welcome to Color Ranker where you can rank ugly colors!</h1>
 <h2 style="text-align:center">Is this color ugly?</h2>
 
+<div style="text-align:center; margin-top: 20px;">
+  <form method="get" action="/">
+    <input type="hidden" name="new_color" value="true">
+    <button type="submit">Generate New Color</button>
+  </form>
+</div>
 
 <div class="color-box" style="background-color: <%= @hex_color %>;"></div>
 
 <p style="text-align:center">Color Code: <%= @hex_color %></p>
 
-<form method="get" action="/" style="text-align:center">
-  <button type="submit">Generate New Color</button>
-</form>
+<div style="text-align:center; margin-top: 20px;">
+  <div style="margin-top: 0px;">
+    <button onclick="submitVote('ugly')">Ugly</button>
+    <button onclick="submitVote('not_ugly')">Not Ugly</button>
+  </div>
+</div>
 
-<form method="get" style="text-align:center" style="text-align:center"> 
-  <button type="submit">Ugly</button>
-</form>
-
-<form method="get" style="text-align:center"> 
-  <button type="submit">Not ugly</button>
-</form>
+<script>
+  function submitVote(vote) {
+    fetch('/vote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': '<%= form_authenticity_token %>'
+      },
+      body: JSON.stringify({ vote: vote })
+    }).then(response => {
+      if (response.ok) {
+        console.log(`Voted ${vote}`);
+      } else {
+        alert("Failed to submit vote.");
+      }
+    });
+  }
+</script>

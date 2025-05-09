@@ -16,6 +16,10 @@
     font-size: 16px;
   }
 
+body {
+  font-family: sans-serif;
+}
+
   
   /*
  * This is a manifest file that'll be compiled into application.css.
