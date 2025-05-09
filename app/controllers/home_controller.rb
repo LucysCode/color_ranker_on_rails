@@ -2,6 +2,50 @@
 
 # Route to return new random color when button is clicked
 
+class HomeController < ApplicationController
+  MAX_UGLY_COLORS = 10
+
+  def index
+    @ugly_colors = ColorVote.where(is_ugly: true).order(created_at: :desc).limit(MAX_UGLY_COLORS).pluck(:hex_color)
+
+    if params[:new_color] == "true"
+      if ColorVote.where(is_ugly: true).count >= MAX_UGLY_COLORS
+        @hex_color = nil
+        flash.now[:notice] = "You've already selected 10 ugly colors!"
+      elsif ColorVote.count >= 16**6
+        @hex_color = nil
+        flash.now[:notice] = "All hex colors have been rated!"
+      else
+        begin
+          new_color = RandomColor.random_color
+        end while ColorVote.exists?(hex_color: new_color)
+        session[:current_color] = new_color
+        @hex_color = new_color
+      end
+    else
+      @hex_color = session[:current_color]
+    end
+  end
+
+  def vote
+    hex_color = session[:current_color]
+    is_ugly = params[:vote] == "ugly"
+
+    unless ColorVote.exists?(hex_color: hex_color)
+      ColorVote.create(hex_color: hex_color, is_ugly: is_ugly)
+    end
+
+    head :ok
+  end
+
+  def reset
+    ColorVote.delete_all
+    session[:current_color] = nil
+    redirect_to root_path(new_color: true), notice: "All votes reset. Start fresh!"
+  end
+end
+
+
 # class HomeController < ApplicationController
 #     def index
 #       @hex_color = RandomColor.random_color
@@ -10,25 +54,25 @@
 # end
 
 
-class HomeController < ApplicationController
-  def index
-    if params[:new_color] == "true"
-      @hex_color = RandomColor.random_color
-      session[:current_color] = @hex_color
-    else
-      @hex_color = session[:current_color] || RandomColor.random_color
-      session[:current_color] ||= @hex_color
-    end
-  end
+# class HomeController < ApplicationController
+#   def index
+#     if params[:new_color] == "true"
+#       @hex_color = RandomColor.random_color
+#       session[:current_color] = @hex_color
+#     else
+#       @hex_color = session[:current_color] || RandomColor.random_color
+#       session[:current_color] ||= @hex_color
+#     end
+#   end
 
-  def vote
-    color = session[:current_color]
-    vote_type = params[:vote]
+#   def vote
+#     color = session[:current_color]
+#     vote_type = params[:vote]
 
-    # You can implement storing this vote in a database or log later
-    # For now, just log it
-    Rails.logger.info "Color #{color} voted as #{vote_type}"
+#     # You can implement storing this vote in a database or log later
+#     # For now, just log it
+#     Rails.logger.info "Color #{color} voted as #{vote_type}"
 
-    head :ok # Respond with no content
-  end
-end
+#     head :ok # Respond with no content
+#   end
+# end
