@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root "home#index"
   post "vote", to: "home#vote"
+  post "reset", to: "home#reset"
+  
   # or
   # get '/', to: 'home#index' if you prefer
 
