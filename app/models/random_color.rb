@@ -4,8 +4,8 @@
 
 class RandomColor
     def self.random_color
-      '#' + 6.times.map { rand(16).to_s(16) }.join.upcase
+      "#" + 6.times.map { rand(16).to_s(16) }.join.upcase
     end
-  end
+end
 
 # utility file to keep this method modular and reusable

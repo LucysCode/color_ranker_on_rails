@@ -17,6 +17,6 @@
 class HomeController < ApplicationController
     def index
       @hex_color = RandomColor.random_color
-    #   @random_color = "#" + "%06x" % (rand * 0xffffff)
+      #   @random_color = "#" + "%06x" % (rand * 0xffffff)
     end
-  end
+end
