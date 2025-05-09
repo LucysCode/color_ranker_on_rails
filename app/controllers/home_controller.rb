@@ -11,7 +11,7 @@ class HomeController < ApplicationController
     if params[:new_color] == "true"
       if ColorVote.where(is_ugly: true).count >= MAX_UGLY_COLORS
         @hex_color = nil
-        flash.now[:notice] = "You've already selected 10 ugly colors!"
+        flash.now[:notice] = "You've already selected 5 ugly colors!"
       elsif ColorVote.count >= 16**6
         @hex_color = nil
         flash.now[:notice] = "All hex colors have been rated!"
