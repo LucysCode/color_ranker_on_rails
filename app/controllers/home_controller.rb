@@ -3,7 +3,7 @@
 # Route to return new random color when button is clicked
 
 class HomeController < ApplicationController
-  MAX_UGLY_COLORS = 10
+  MAX_UGLY_COLORS = 5
 
   def index
     @ugly_colors = ColorVote.where(is_ugly: true).order(created_at: :desc).limit(MAX_UGLY_COLORS).pluck(:hex_color)
