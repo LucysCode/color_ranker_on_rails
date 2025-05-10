@@ -15,7 +15,8 @@
 
   <div style="text-align:center;">
     <button onclick="submitVote('ugly')">Ew, it&rsquo;s ugly</button>
-    <button onclick="submitVote('not_ugly')">I like this</button>
+    <button onclick="submitVote('nice')">
+    Great color</button>
   </div>
 <% end %>
 
@@ -34,6 +35,15 @@
   <h3 style="text-align:center; margin-top: 40px;">Top Ugly Colors</h3>
   <div style="display:flex; justify-content:center; flex-wrap: wrap; gap: 10px;">
     <% @ugly_colors.each do |color| %>
+      <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+    <% end %>
+  </div>
+<% end %>
+
+<% if @nice_colors.present? %>
+  <h3 style="text-align:center; margin-top: 40px;">Top Nice Colors</h3>
+  <div style="display:flex; justify-content:center; flex-wrap: wrap; gap: 10px;">
+    <% @nice_colors.each do |color| %>
       <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
     <% end %>
   </div>
