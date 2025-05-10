@@ -4,14 +4,20 @@
 
 class HomeController < ApplicationController
   MAX_UGLY_COLORS = 5
+  MAX_NICE_COLORS = 5
 
   def index
     @ugly_colors = ColorVote.where(is_ugly: true).order(created_at: :desc).limit(MAX_UGLY_COLORS).pluck(:hex_color)
+
+    @nice_colors = ColorVote.where(is_nice: true).order(created_at: :desc).limit(MAX_NICE_COLORS).pluck(:hex_color)
 
     if params[:new_color] == "true"
       if ColorVote.where(is_ugly: true).count >= MAX_UGLY_COLORS
         @hex_color = nil
         flash.now[:notice] = "You've already selected 5 ugly colors!"
+      elsif ColorVote.where(is_nice: true).count >= MAX_NICE_COLORS
+        @hex_color = nil
+        flash.now[:notice] = "You've already liked 5 colors!"
       elsif ColorVote.count >= 16**6
         @hex_color = nil
         flash.now[:notice] = "All hex colors have been rated!"
@@ -30,9 +36,10 @@ class HomeController < ApplicationController
   def vote
     hex_color = session[:current_color]
     is_ugly = params[:vote] == "ugly"
+    is_nice = params[:vote] == "nice"
 
     unless ColorVote.exists?(hex_color: hex_color)
-      ColorVote.create(hex_color: hex_color, is_ugly: is_ugly)
+      ColorVote.create(hex_color: hex_color, is_ugly: is_ugly, is_nice: is_nice)
     end
 
     head :ok
