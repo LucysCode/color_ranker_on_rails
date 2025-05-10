@@ -34,6 +34,7 @@ class HomeController < ApplicationController
   end
 
   def vote
+    Rails.logger.info "Received vote: #{params[:vote]}"
     hex_color = session[:current_color]
     is_ugly = params[:vote] == "ugly"
     is_nice = params[:vote] == "nice"
