@@ -2,8 +2,6 @@
 <h2 style="text-align:center">Is this color ugly?</h2>
 <p style="text-align:center">Select up to <%= @max_colors %> ugly colors and <%= @max_colors %> great colors!</p>
 
-
-
 <div style="text-align:center; margin-top: 20px;">
     <form method="get" action="/">
       <input type="hidden" name="new_color" value="true">
@@ -28,17 +26,13 @@
   </p>
 <% end %>
 
-
 <p style="text-align:center">Color Code: <%= @hex_color %></p>
-
 
 <div style="text-align:center;">
     <button onclick="submitVote('ugly')">Ew, it&rsquo;s ugly</button>
     <button onclick="submitVote('nice')">
     Great color</button>
 </div>
-
-
 
 <% if @message %>
   <p style="color: red; text-align:center;"><%= @message %></p>
