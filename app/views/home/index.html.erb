@@ -1,23 +1,47 @@
 <h1 style="text-align:center">Welcome to Color Ranker where you can rank ugly colors!</h1>
 <h2 style="text-align:center">Is this color ugly?</h2>
+<p style="text-align:center">Select up to <%= @max_colors %> ugly colors and <%= @max_colors %> great colors!</p>
 
-<% if @hex_color %>
-  <div style="text-align:center; margin-top: 20px;">
+
+
+<div style="text-align:center; margin-top: 20px;">
     <form method="get" action="/">
       <input type="hidden" name="new_color" value="true">
       <button type="submit">Not sure, give me a new color</button>
     </form>
-  </div>
+</div>
 
+<% unless @show_pikachu %>
   <div class="color-box" style="background-color: <%= @hex_color %>;"></div>
+<% end %>
 
-  <p style="text-align:center">Color Code: <%= @hex_color %></p>
+<% if @show_pikachu %>
+  <p style="text-align: center;">
+    <img src="<%= @image_url %>" alt="Surprised Pikachu" style="max-width: 300px; height: auto;" />
+    <br>
+    <small>
+      Image from
+      <a href="https://knowyourmeme.com/memes/surprised-pikachu" target="_blank" rel="noopener noreferrer">
+        Know Your Meme
+      </a>
+    </small>
+  </p>
+<% end %>
 
-  <div style="text-align:center;">
+
+<p style="text-align:center">Color Code: <%= @hex_color %></p>
+
+
+<div style="text-align:center;">
     <button onclick="submitVote('ugly')">Ew, it&rsquo;s ugly</button>
     <button onclick="submitVote('nice')">
     Great color</button>
-  </div>
+</div>
+
+
+
+<% if @message %>
+  <p style="color: red; text-align:center;"><%= @message %></p>
 <% end %>
 
 <% if flash[:notice] %>
