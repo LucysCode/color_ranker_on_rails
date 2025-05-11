@@ -4,13 +4,11 @@ class HomeController < ApplicationController
   MAX_NICE_COLORS = MAX_COLORS
 
   def index
-    @ugly_colors = ColorVote.where(session_id: session[:session_id], is_ugly: true)
-                            .order(created_at: :desc)
+    @ugly_colors = ColorVote.where(session_id: session[:session_id], is_ugly: true).order(:position)
                             .limit(MAX_UGLY_COLORS)
                             .pluck(:hex_color)
 
-    @nice_colors = ColorVote.where(session_id: session[:session_id], is_nice: true)
-                            .order(created_at: :desc)
+    @nice_colors = ColorVote.where(session_id: session[:session_id], is_nice: true).order(:position)
                             .limit(MAX_NICE_COLORS)
                             .pluck(:hex_color)
 
@@ -44,6 +42,15 @@ class HomeController < ApplicationController
     end
   end
 
+  def update_position
+    ordered_ids = Array(params[:ordered_ids]) # ensures it's always an array
+    ordered_ids.each_with_index do |id, index|
+      ColorVote.where(id: id, session_id: session[:session_id]).update_all(position: index)
+    end
+  
+    head :ok
+  end
+
   def vote
     Rails.logger.info "Received vote: #{params[:vote]}"
     hex_color = session[:current_color]
@@ -51,11 +58,15 @@ class HomeController < ApplicationController
     is_nice = params[:vote] == "nice"
   
     unless ColorVote.exists?(hex_color: hex_color, session_id: session[:session_id])
+      position_scope = ColorVote.where(session_id: session[:session_id], is_ugly: is_ugly, is_nice: is_nice)
+      position = position_scope.count
+
       ColorVote.create(
         hex_color: hex_color,
         is_ugly: is_ugly,
         is_nice: is_nice,
-        session_id: session[:session_id]
+        session_id: session[:session_id],
+        position: position
       )
     end
   
@@ -63,7 +74,7 @@ class HomeController < ApplicationController
   end  
 
   def reset
-    ColorVote(session_id: session[:session_id]).delete_all
+    ColorVote.where(session_id: session[:session_id]).delete_all
     session[:current_color] = nil
     redirect_to root_path(new_color: true), notice: "All colors reset. Start fresh!"
   end
