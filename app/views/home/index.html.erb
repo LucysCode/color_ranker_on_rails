@@ -10,11 +10,15 @@
     <% if @ugly_colors.present? %>
       <h3>Top Ugly Colors</h3>
       <ul id="ugly_colors_list" style="list-style-type:none; padding: 0;">
-        <% @ugly_colors.each do |color| %>
-          <li data-id="<%= color %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+
+        <% @ugly_colors.take(@max_colors).each do |color_vote| %>
+          <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
+            <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid #000;"></div>
+            <span style="font-weight: bold;"><%= color_vote.position + 1 %></span>
           </li>
         <% end %>
+    
+      
       </ul>
     <% end %>
   </div>
@@ -80,71 +84,87 @@
     <% if @nice_colors.present? %>
       <h3>Top Nice Colors</h3>
       <ul id="nice_colors_list" style="list-style-type:none; padding: 0;">
-        <% @nice_colors.each do |color| %>
-          <li data-id="<%= color %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+        
+        <% @nice_colors.each do |color_vote| %>
+          <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
+            <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid #000;"></div>
+            <span style="font-weight: bold;"><%= color_vote.position + 1 %></span>
           </li>
         <% end %>
+      
       </ul>
     <% end %>
   </div>
-</div>
 
 <script>
-  function submitVote(vote) {
-    fetch('/vote', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': '<%= form_authenticity_token %>'
-      },
-      body: JSON.stringify({ vote: vote })
-    }).then(response => {
-      if (response.ok) {
-        window.location.href = "/?new_color=true";
-      } else {
-        alert("Failed to submit vote.");
-      }
-    });
-  }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    if (document.getElementById('ugly_colors_list')) {
-      new Sortable(document.getElementById('ugly_colors_list'), {
-        group: 'colors',
-        onEnd: function(evt) {
-          updatePosition('ugly_colors_list', evt.newIndex, evt.oldIndex);
-        }
-      });
-    }
-
-    if (document.getElementById('nice_colors_list')) {
-      new Sortable(document.getElementById('nice_colors_list'), {
-        group: 'colors',
-        onEnd: function(evt) {
-          updatePosition('nice_colors_list', evt.newIndex, evt.oldIndex);
-        }
-      });
+function submitVote(vote) {
+  fetch('/vote', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': '<%= form_authenticity_token %>'
+    },
+    body: JSON.stringify({ vote: vote })  // <-- Fix is here
+  }).then(response => {
+    if (response.ok) {
+      window.location.href = "/?new_color=true";
+    } else {
+      alert("Failed to submit vote.");
     }
   });
+}
 
-  function updatePosition(listId, newIndex, oldIndex) {
-    const orderedIds = Array.from(document.querySelectorAll(`#${listId} li`)).map((li) => li.dataset.id);
-    fetch('/update_position', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': '<%= form_authenticity_token %>'
-      },
-      body: JSON.stringify({ ordered_ids: orderedIds })
-    }).then(response => {
-      if (!response.ok) {
-        alert('Failed to update order');
+document.addEventListener("DOMContentLoaded", function () {
+  if (document.getElementById('ugly_colors_list')) {
+    new Sortable(document.getElementById('ugly_colors_list'), {
+      group: 'ugly',
+      onEnd: function(evt) {
+        updatePosition('ugly_colors_list', evt.newIndex, evt.oldIndex);
       }
     });
   }
+
+  if (document.getElementById('nice_colors_list')) {
+    new Sortable(document.getElementById('nice_colors_list'), {
+      group: 'nice',
+      onEnd: function(evt) {
+        updatePosition('nice_colors_list', evt.newIndex, evt.oldIndex);
+      }
+    });
+  }
+});
+
+function updatePosition(listId, newIndex, oldIndex) {
+  const list = document.getElementById(listId);
+  const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
+
+  // Update the order on the server
+  fetch('/update_position', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': '<%= form_authenticity_token %>'
+    },
+    body: JSON.stringify({
+      ordered_ids: orderedIds,
+      list_type: listId
+    })
+  }).then(response => {
+    if (response.ok) {
+      // Once the order is updated successfully, update the position number on the frontend
+      const items = list.querySelectorAll('li');
+      items.forEach((item, index) => {
+        item.querySelector('span').textContent = index + 1; // Update the position number on the frontend
+      });
+    } else {
+      alert('Failed to update order');
+    }
+  });
+}
+
+
+  
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-
-

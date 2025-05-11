@@ -4,13 +4,15 @@ class HomeController < ApplicationController
   MAX_NICE_COLORS = MAX_COLORS
 
   def index
-    @ugly_colors = ColorVote.where(session_id: session[:session_id], is_ugly: true).order(:position)
-                            .limit(MAX_UGLY_COLORS)
-                            .pluck(:hex_color)
+    @ugly_colors = ColorVote.where(session_id: session[:session_id], is_ugly: true)
+                         .order(:position)
+                        #  .limit(MAX_UGLY_COLORS)
 
-    @nice_colors = ColorVote.where(session_id: session[:session_id], is_nice: true).order(:position)
-                            .limit(MAX_NICE_COLORS)
-                            .pluck(:hex_color)
+    @nice_colors = ColorVote.where(session_id: session[:session_id], is_nice: true)
+                         .order(:position)
+                        #  .limit(MAX_NICE_COLORS)
+                        # .pluck(:id, :position)
+
 
     @max_colors = MAX_COLORS
   
@@ -43,14 +45,28 @@ class HomeController < ApplicationController
   end
 
   def update_position
-    ordered_ids = Array(params[:ordered_ids]) # ensures it's always an array
+    ordered_ids = params[:ordered_ids]
+    list_type = params[:list_type]
+  
+    # Ensure the request has the correct data
+    return head :bad_request unless ordered_ids.present? && list_type.present?
+  
+    # Loop through each color and update its position
     ordered_ids.each_with_index do |id, index|
-      ColorVote.where(id: id, session_id: session[:session_id]).update_all(position: index)
+      color_vote = ColorVote.find_by(id: id, session_id: session[:session_id])
+      next unless color_vote
+  
+      # Update position only if it's the correct list
+      if list_type == 'ugly_colors_list' && color_vote.is_ugly
+        color_vote.update(position: index)
+      elsif list_type == 'nice_colors_list' && color_vote.is_nice
+        color_vote.update(position: index)
+      end
     end
   
     head :ok
   end
-
+  
   def vote
     Rails.logger.info "Received vote: #{params[:vote]}"
     hex_color = session[:current_color]
