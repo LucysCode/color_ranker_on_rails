@@ -18,7 +18,7 @@ class HomeController < ApplicationController
         ColorVote.where(is_ugly: true).count >= MAX_UGLY_COLORS && ColorVote.where(is_nice: true).count >= MAX_NICE_COLORS
         @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
         @show_pikachu = true
-        @message = "You selected too many ugly and nice colors! Let's reset :)"
+        @message = "You ranked all the colors! Wanna reset? :)"
       else
         begin
           new_color = RandomColor.random_color
