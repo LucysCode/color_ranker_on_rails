@@ -1,5 +1,3 @@
-# Route to return new random color when button is clicked
-
 class HomeController < ApplicationController
   MAX_COLORS = 3
   MAX_UGLY_COLORS = MAX_COLORS
@@ -14,8 +12,7 @@ class HomeController < ApplicationController
       if ColorVote.count >= 16**6
         @hex_color = "#FFFFFF"
         @message = "Woah you went through 16,777,216 colors? That's some serious dedication."
-      elsif
-        ColorVote.where(is_ugly: true).count >= MAX_UGLY_COLORS && ColorVote.where(is_nice: true).count >= MAX_NICE_COLORS
+      elsif ColorVote.where(is_ugly: true).count >= MAX_UGLY_COLORS && ColorVote.where(is_nice: true).count >= MAX_NICE_COLORS
         @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
         @show_pikachu = true
         @message = "You ranked all the colors! Wanna reset? :)"
