@@ -6,16 +6,19 @@
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; gap: 30px;">
 
   <!-- Left Column: Ugly Colors -->
-  <div style="flex: 1;">
+  <div id="ugly_colors" class="sortable-list" style="flex: 1;">
     <% if @ugly_colors.present? %>
-      <h3 style="text-align:center;">Top Ugly Colors</h3>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <h3>Top Ugly Colors</h3>
+      <ul id="ugly_colors_list" style="list-style-type:none; padding: 0;">
         <% @ugly_colors.each do |color| %>
-          <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+          <li data-id="<%= color %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
+            <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+          </li>
         <% end %>
-      </div>
-    <% end %>  
+      </ul>
+    <% end %>
   </div>
+
 
   <!-- Center Column: Color Box and Buttons -->
   <div style="flex: 1; text-align:center;">
@@ -72,17 +75,19 @@
   </div>
 
   <!-- Right Column: Nice Colors -->
-  <div style="flex: 1;">
+
+  <div id="nice_colors" class="sortable-list" style="flex: 1;">
     <% if @nice_colors.present? %>
-      <h3 style="text-align:center;">Top Nice Colors</h3>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <h3>Top Nice Colors</h3>
+      <ul id="nice_colors_list" style="list-style-type:none; padding: 0;">
         <% @nice_colors.each do |color| %>
-          <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+          <li data-id="<%= color %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
+            <div style="width: 60px; height: 60px; background-color: <%= color %>; border: 1px solid #000;"></div>
+          </li>
         <% end %>
-      </div>
+      </ul>
     <% end %>
   </div>
-
 </div>
 
 <script>
@@ -102,4 +107,44 @@
       }
     });
   }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    if (document.getElementById('ugly_colors_list')) {
+      new Sortable(document.getElementById('ugly_colors_list'), {
+        group: 'colors',
+        onEnd: function(evt) {
+          updatePosition('ugly_colors_list', evt.newIndex, evt.oldIndex);
+        }
+      });
+    }
+
+    if (document.getElementById('nice_colors_list')) {
+      new Sortable(document.getElementById('nice_colors_list'), {
+        group: 'colors',
+        onEnd: function(evt) {
+          updatePosition('nice_colors_list', evt.newIndex, evt.oldIndex);
+        }
+      });
+    }
+  });
+
+  function updatePosition(listId, newIndex, oldIndex) {
+    const orderedIds = Array.from(document.querySelectorAll(`#${listId} li`)).map((li) => li.dataset.id);
+    fetch('/update_position', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': '<%= form_authenticity_token %>'
+      },
+      body: JSON.stringify({ ordered_ids: orderedIds })
+    }).then(response => {
+      if (!response.ok) {
+        alert('Failed to update order');
+      }
+    });
+  }
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+
