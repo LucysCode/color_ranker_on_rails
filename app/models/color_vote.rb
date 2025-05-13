@@ -1,3 +1,5 @@
+# This ColorVote model is where you define attributes, validations, and custom methods related to the ColorVote object. 
+
 class ColorVote < ApplicationRecord
     validates :hex_color, presence: true, uniqueness: true
     validate :only_one_vote_type

@@ -6,13 +6,9 @@ class HomeController < ApplicationController
   def index
     @ugly_colors = ColorVote.where(session_id: session[:session_id], is_ugly: true)
                          .order(:position)
-    #  .limit(MAX_UGLY_COLORS)
 
     @nice_colors = ColorVote.where(session_id: session[:session_id], is_nice: true)
                          .order(:position)
-    #  .limit(MAX_NICE_COLORS)
-    # .pluck(:id, :position)
-
 
     @max_colors = MAX_COLORS
 
@@ -44,6 +40,7 @@ class HomeController < ApplicationController
     end
   end
 
+  # Backend logic for when he list order is changed
   def update_position
     ordered_ids = params[:ordered_ids]
     list_type = params[:list_type]

@@ -6,19 +6,27 @@
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; gap: 30px;">
 
   <!-- Left Column: Ugly Colors -->
+  <!-- The flex: 1; tells the element how much space it should take up relative to its siblings inside a flex container. -->
   <div id="ugly_colors" class="sortable-list" style="flex: 1;">
+    <!-- When someone votes a color as ugly, Top Ugly Colors show up. Otherwise, it's hidden. -->
     <% if @ugly_colors.present? %>
       <h3>Top Ugly Colors</h3>
+      <!-- <ul> stands for unordered list. An HTML element used to group a list of items where order doesn't matter (i.e., no numbering). Inside a <ul>, you typically use <li> elements. <ul> auto adds bullet points and denting. The style removes the bullet points and denting. -->
+      <!-- The id is defined here, basically a label. The functionality is written in javascript block. -->
       <ul id="ugly_colors_list" style="list-style-type:none; padding: 0;">
 
+        <!-- This pulls from home_controller.rb, where @ugly_colors is an array of colors that has 'is_ugly' set to 'true'. -->
+        <!-- .take Ruby method limits the number of @ugly_colors to the value of @max_colors. Taking into account the ordering defined by @ugly_colors in home_controller.rb. -->
+        <!-- .each do |color_vote| is a loop. color_vote represents the element in the @ugly_colors array. The following code loops through color_vote element of @ugly_colors. -->
         <% @ugly_colors.take(@max_colors).each do |color_vote| %>
+          <!-- <li> is a list that's usually in <ul>. -->
+          <!-- data-id is a data attribute. And color_vote.id is the ID # that identifies which color_vote it is, as votes come in. -->
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid #000;"></div>
-            <span style="font-weight: bold;"><%= color_vote.position + 1 %></span>
+            <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
+            <span style="font-weight: bold;">Vote #<%= color_vote.id %>, Rank: <%= color_vote.position + 1 %></span>
           </li>
         <% end %>
     
-      
       </ul>
     <% end %>
   </div>
@@ -88,7 +96,7 @@
         <% @nice_colors.each do |color_vote| %>
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
             <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid #000;"></div>
-            <span style="font-weight: bold;"><%= color_vote.position + 1 %></span>
+            <span style="font-weight: bold;">Vote #<%= color_vote.id %>, Rank: <%= color_vote.position + 1 %></span>
           </li>
         <% end %>
       
@@ -96,6 +104,8 @@
     <% end %>
   </div>
 
+
+<!-- This is javascript -->
 <script>
 
 function submitVote(vote) {
@@ -163,8 +173,7 @@ function updatePosition(listId, newIndex, oldIndex) {
   });
 }
 
-
-  
 </script>
 
+<!-- This is Sortable.js library to allow for drag-and-drop functionality -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
