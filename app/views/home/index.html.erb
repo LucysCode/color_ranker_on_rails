@@ -22,10 +22,11 @@
           <!-- <li> is a list that's usually in <ul>. -->
           <!-- data-id is a data attribute. And color_vote.id is the ID # that identifies which color_vote it is, as votes come in. -->
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
-            <!-- <span> is an inline HTML element used to group and style small chunks of text or content without affecting the layout structure. -->
+            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
+            <!-- <span> is an inline HTML element used to group and style small chunks of text or content without affecting the layout structure. Rank is hard-coded. -->
             <!-- color_vote.position starts at 0 so to let users see the ranking start at 1, add +1 to color_vote.position. -->
-            <span style="font-weight: bold;">Rank: <%= color_vote.position.to_i + 1 %></span>
+            <span style="font-weight: bold;">Rank:&nbsp;</span>
+            <span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span>
           </li>
         <% end %>
     
@@ -108,7 +109,8 @@
         <% @nice_colors.each do |color_vote| %>
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
             <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
-            <span style="font-weight: bold;">Rank: <%= color_vote.position.to_i + 1 %></span>
+            <span style="font-weight: bold;">Rank:&nbsp;</span>
+            <span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span>
           </li>
         <% end %>
       
@@ -188,7 +190,7 @@ function updatePosition(listId, newIndex, oldIndex) {
       // Once the order is updated successfully, update the position number on the frontend
       const items = list.querySelectorAll('li');
       items.forEach((item, index) => {
-        item.querySelector('span').textContent = index + 1; // Update the position number on the frontend
+        item.querySelector('.position-number').textContent = index + 1; // Update the position number on the frontend
       });
     } else {
       alert('Failed to update order');
