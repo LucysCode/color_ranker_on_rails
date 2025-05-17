@@ -23,7 +23,9 @@
           <!-- data-id is a data attribute. And color_vote.id is the ID # that identifies which color_vote it is, as votes come in. -->
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
             <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
-            <span style="font-weight: bold;">Vote #<%= color_vote.id %>, Rank: <%= color_vote.position + 1 %></span>
+            <!-- <span> is an inline HTML element used to group and style small chunks of text or content without affecting the layout structure. -->
+            <!-- color_vote.position starts at 0 so to let users see the ranking start at 1, add +1 to color_vote.position. -->
+            <span style="font-weight: bold;">Rank: <%= color_vote.position.to_i + 1 %></span>
           </li>
         <% end %>
     
@@ -35,10 +37,12 @@
   <!-- Center Column: Color Box and Buttons -->
   <div style="flex: 1; text-align:center;">
 
+    <!-- Logic to show the color box, unless the meme shows up. -->
     <% unless @show_pikachu %>
       <div class="color-box" style="width: 300px; height: 192px; background-color: <%= @hex_color %>; border: 2px solid #000; margin: 0 auto;"></div>
     <% end %>
 
+    <!-- Styling for meme -->
     <% if @show_pikachu %>
       <div style="text-align: center; margin-bottom: 10px;">
         <img src="<%= @image_url %>" alt="Surprised Pikachu" style="max-width: 300px; height: auto;" />
@@ -53,15 +57,18 @@
       </div>
     <% end %>
 
+    <!-- Logic to show the hex #, unless the meme shows up. -->
     <% unless @show_pikachu %>
       <p style="text-align:center; margin-top: 10px;">Color Code: <%= @hex_color %></p>
     <% end %>
 
+    <!-- Buttons to vote -->
     <div style="text-align:center; margin-top: 10px;">
       <button onclick="submitVote('ugly')">Ew, it&rsquo;s ugly</button>
       <button onclick="submitVote('nice')">Great color</button>
     </div>
 
+    <!-- Button to generate new color only -->
     <div style="text-align:center; margin-top: 10px;">
       <form method="get" action="/">
         <input type="hidden" name="new_color" value="true">
@@ -69,17 +76,22 @@
       </form>
     </div>
 
+    <!-- Reset button for votes -->
     <div style="text-align:center; margin-top: 10px;">
       <form method="post" action="/reset">
+        <!-- Adds hidden input field that includes CSRF protection token. Required for "post" methods. -->
+        <!-- Analogy: Mailing an envelope. Write stuff (inputs), seal it with stamp (token), drop it mailbox (submit), goes to address (action), handled by someone (controller). -->
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <button type="submit">Reset</button>
       </form>
     </div>
-
+    
+    <!-- Message for max votes, dependent on which vote is maxed. -->
     <% if @message %>
       <p style="color: red; text-align:center; margin-top: 10px;"><%= @message %></p>
     <% end %>
 
+    <!-- Message for when the reset button is clicked. -->
     <% if flash[:notice] %>
       <p style="color: red; text-align:center; margin-top: 10px;"><%= flash[:notice] %></p>
     <% end %>
@@ -95,8 +107,8 @@
         
         <% @nice_colors.each do |color_vote| %>
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 60px; height: 60px; background-color: <%= color_vote.hex_color %>; border: 1px solid #000;"></div>
-            <span style="font-weight: bold;">Vote #<%= color_vote.id %>, Rank: <%= color_vote.position + 1 %></span>
+            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
+            <span style="font-weight: bold;">Rank: <%= color_vote.position.to_i + 1 %></span>
           </li>
         <% end %>
       
@@ -105,20 +117,31 @@
   </div>
 
 
-<!-- This is javascript -->
+<!-- This is javascript. Use Javascript syntax. -->
 <script>
 
+// This creates a function called submitVote and takes in one parameter called 'vote'. In this case, vote is either 'ugly' or 'nice'
 function submitVote(vote) {
-  fetch('/vote', {
+  // A function that makes network requests. /vote is the route URL being called.
+  fetch('/vote', { // Code between here and the next closing bracket is where you configure the request. Basically saying, 'send a request to /vote with this configuration.
+    // 'POST' means I'm submitting data to the server. vs 'GET' which retrieves read-only data.
     method: 'POST',
     headers: {
+      // Content-Type tells the server 'I'm sending JSON (JavaScript Object Notation) data in the body of this request, otherwise server wouldn't know how to parse the incoming data. 
       'Content-Type': 'application/json',
+      // Token protects against CSRF attacks. This token is what Rails expects for Javascript.
       'X-CSRF-Token': '<%= form_authenticity_token %>'
     },
-    body: JSON.stringify({ vote: vote })  // <-- Fix is here
+    // This is the actual data I'm sending to the POST request. vote: vote turns into vote: "ugly" for example.
+    body: JSON.stringify({ vote: vote })
+    // Promise Handler. Runs once the server sends back a response. Response is the reply from /vote URL endpoint
   }).then(response => {
+    // response.ok checks to see if server said "Success!"
     if (response.ok) {
+      // If the response is 'success', redirect page to /?new_color=true. 
+      // Does this trigger Rails app to show a new color on page load?
       window.location.href = "/?new_color=true";
+      // If response fails, show the alert to the user.
     } else {
       alert("Failed to submit vote.");
     }
