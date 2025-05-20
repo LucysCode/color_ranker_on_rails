@@ -6,7 +6,7 @@
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; gap: 30px;">
 
   <!-- Left Column: Ugly Colors -->
-  <!-- The flex: 1; tells the element how much space it should take up relative to its siblings inside a flex container. -->
+  <!-- The flex: 1; tells the element how much space it should take up relative to its siblings inside a flex container. Pulls from application.css-->
   <div id="ugly_colors" class="sortable-list" style="flex: 1;">
     <!-- When someone votes a color as ugly, Top Ugly Colors show up. Otherwise, it's hidden. -->
     <% if @ugly_colors.present? %>
@@ -22,7 +22,7 @@
           <!-- <li> is a list that's usually in <ul>. -->
           <!-- data-id is a data attribute. And color_vote.id is the ID # that identifies which color_vote it is, as votes come in. -->
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
+            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000; border-radius: 8px"></div>
             <!-- <span> is an inline HTML element used to group and style small chunks of text or content without affecting the layout structure. Rank is hard-coded. -->
             <!-- color_vote.position starts at 0 so to let users see the ranking start at 1, add +1 to color_vote.position. -->
             <span style="font-weight: bold;">&nbsp;Rank:&nbsp;</span>
@@ -40,13 +40,13 @@
 
     <!-- Logic to show the color box, unless the meme shows up. -->
     <% unless @show_pikachu %>
-      <div class="color-box" style="width: 300px; height: 192px; background-color: <%= @hex_color %>; border: 2px solid #000; margin: 0 auto;"></div>
+      <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
     <% end %>
 
     <!-- Styling for meme -->
     <% if @show_pikachu %>
       <div style="text-align: center; margin-bottom: 10px;">
-        <img src="<%= @image_url %>" alt="Surprised Pikachu" style="max-width: 300px; height: auto;" />
+        <img src="<%= @image_url %>" alt="Surprised Pikachu" style="max-width: 300px; height: auto; margin: 20px auto;" />
         <br>
         <small style="font-size: 6px;">
           Image from
@@ -60,7 +60,7 @@
 
     <!-- Logic to show the hex #, unless the meme shows up. -->
     <% unless @show_pikachu %>
-      <p style="text-align:center; margin-top: 10px;">Color Code: <%= @hex_color %></p>
+      <p style="text-align:center; margin-top: 10px;">Hex Code: <%= @hex_color %></p>
     <% end %>
 
     <!-- Buttons to vote -->
@@ -108,7 +108,7 @@
         
         <% @nice_colors.each do |color_vote| %>
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000;"></div>
+            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000; border-radius: 8px"></div>
             <span style="font-weight: bold;">&nbsp;Rank:&nbsp;</span>
             <span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span>
           </li>
@@ -140,7 +140,7 @@ function submitVote(vote) {
   }).then(response => {
     // response.ok checks to see if server said "Success!"
     if (response.ok) {
-      // If the response is 'success', redirect page to /?new_color=true. 
+      // If the response is 'success', redirect page to / end point with ?new_color=true params.
       // Does this trigger Rails app to show a new color on page load?
       window.location.href = "/?new_color=true";
       // If response fails, show the alert to the user.
