@@ -1,0 +1,68 @@
+<h1 style="text-align:center">Welcome to Color Pair Ranker!</h1>
+<h2 style="text-align:center">Which color pair do you like better?</h2>
+<p style="text-align:center">Select up to <%= @max_pairs %> ugly pairs and <%= @max_pairs %> great pairs!</p>
+
+<div style="display: flex; justify-content: center; gap: 40px; margin-top: 30px;">
+
+  <!-- Color Box 1 -->
+  <div style="text-align: center;">
+    <div class="pair-color-box" style="background-color: <%= @color_pair[0] %>;"></div>
+    <p><%= @color_pair[0] %></p>
+  </div>
+
+  <!-- Color Box 2 -->
+  <div style="text-align: center;">
+    <div class="pair-color-box" style="background-color: <%= @color_pair[1] %>;"></div>
+    <p><%= @color_pair[1] %></p>
+  </div>
+
+</div>
+
+<!-- Buttons to vote -->
+<div style="text-align: center;">
+    <button onclick="submitPairVote('<%= @color_pair[0] %>')">Ugly Pair</button>
+    <button onclick="submitPairVote('<%= @color_pair[1] %>')">Great Pair</button>
+</div>
+
+<!-- Button to get a new pair -->
+<div style="text-align: center;">
+  <form method="get" action="<%= rank_color_pairs_path %>">
+    <input type="hidden" name="new_pair" value="true" />
+    <button type="submit">Show me a new pair</button>
+  </form>
+</div>
+
+<!-- Reset votes -->
+<div style="text-align: center;">
+  <form method="post" action="<%= reset_pairs_path %>">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <button type="submit">Reset all pairs</button>
+  </form>
+</div>
+
+<!-- Route to Color Pairs page -->
+  <div style="text-align: center; margin: 15px">
+    <%= link_to "Color Ranker", root_path %>
+  </div>
+
+
+<script>
+
+function submitPairVote(colorHex) {
+  fetch('<%= vote_pair_path %>', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': '<%= form_authenticity_token %>'
+    },
+    body: JSON.stringify({ selected_color: colorHex })
+  }).then(response => {
+    if(response.ok) {
+      // Reload page with a new pair after voting
+      window.location.href = "<%= rank_color_pairs_path(new_pair: true) %>";
+    } else {
+      alert("Failed to submit vote.");
+    }
+  });
+}
+</script>

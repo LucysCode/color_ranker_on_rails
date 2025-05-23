@@ -1,4 +1,4 @@
-<h1 style="text-align:center">Welcome to Color Ranker where you can rank ugly colors!</h1>
+<h1 style="text-align:center">Welcome to Color Ranker. You can rank ugly colors!</h1>
 <h2 style="text-align:center">Is this color ugly?</h2>
 <p style="text-align:center">Select up to <%= @max_colors %> ugly colors and <%= @max_colors %> great colors!</p>
 
@@ -41,6 +41,7 @@
     <!-- Logic to show the color box, unless the meme shows up. -->
     <% unless @show_pikachu %>
       <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
+      <p>Hex Code: <%= @hex_color %></p>
     <% end %>
 
     <!-- Styling for meme -->
@@ -55,11 +56,6 @@
         </small>
         <p>Pikachu: I&rsquo;m surprised</p>
       </div>
-    <% end %>
-
-    <!-- Logic to show the hex #, unless the meme shows up. -->
-    <% unless @show_pikachu %>
-      <p>Hex Code: <%= @hex_color %></p>
     <% end %>
 
     <!-- Buttons to vote -->
@@ -85,7 +81,8 @@
         <button type="submit">Reset</button>
       </form>
     </div>
-    
+
+    <!-- Route to Color Pairs page -->
     <div style="margin: 15px;">
       <%= link_to "Color Pairs Ranker", rank_color_pairs_path %>
     </div>
@@ -96,9 +93,13 @@
     <% end %>
 
     <!-- Message for when the reset button is clicked. -->
+
     <% if flash[:notice] %>
-      <p style="color: red;"><%= flash[:notice] %></p>
+      <div id="flash-notice" class="flash-message" style="color: red">
+        <%= flash[:notice] %>
+      </div>
     <% end %>
+
 
   </div>
 
@@ -217,6 +218,18 @@ function updatePosition(listId, newIndex, oldIndex) {
     }
   });
 }
+
+// Timer for notice and messages
+  document.addEventListener("turbo:load", () => {
+    const notice = document.getElementById("flash-notice");
+    if (notice) {
+      setTimeout(() => {
+        notice.style.transition = "opacity 1s ease";
+        notice.style.opacity = "0";
+        setTimeout(() => notice.remove(), 1000);
+      }, 3000);
+    }
+  });
 
 </script>
 

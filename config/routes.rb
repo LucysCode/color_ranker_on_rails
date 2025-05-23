@@ -1,11 +1,15 @@
 Rails.application.routes.draw do
-  get "pages/rank_color_pairs"
-  get "pages/about"
   root "home#index"
   post "vote", to: "home#vote"
   post "reset", to: "home#reset"
   post "/update_position", to: "home#update_position"
-  get "/rank_color_pairs", to: "pages#rank_color_pairs"
+
+  get "pairs/rank_color_pairs"
+  post 'vote_pair', to: 'pairs#vote_pair'
+  post "reset_pairs", to: "pairs#reset_pairs"
+  get "/rank_color_pairs", to: "pairs#rank_color_pairs"
+
+  # get "/rank_color_pairs", to: "pages#index"
 
 
   # or

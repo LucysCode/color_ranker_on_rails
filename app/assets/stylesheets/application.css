@@ -1,18 +1,36 @@
 .main-color-box {
-    width: 300px;
-    height: 200px;
-    border: 1px solid black;
-    border-radius: 15px;
-    margin: 0px auto;
-    display: block;
+  width: 300px;
+  height: 200px;
+  border: 1px solid black;
+  border-radius: 15px;
+  margin: 0px auto;
+  display: block;
 }
 
 .side-color-box {
-    width: 75px;
-    height: 50px;
-    border: 1px solid black;
-    border-radius: 8px;
-    display: block;
+  width: 75px;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 8px;
+  display: block;
+}
+
+.pair-color-box {
+  width: 130px;
+  height: 200px;
+  border: 1px solid black;
+  border-radius: 8px;
+  margin: 0px auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.pair-side-color-box {
+  width: 75px;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 8px;
+  display: block;
 }
 
 .meme-box {

@@ -43,10 +43,10 @@ class HomeController < ApplicationController
         
         # While generating new colors, if limit for ugly colors reached, send a message.
         if ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS
-          @message = "You selected too many ugly colors!"
+          @message = "You selected the maximum ugly colors! Want to select more great colors?"
         # While generating new colors, if limit for nice colors reached, send a message.
         elsif ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
-          @message = "You selected too many nice colors!"
+          @message = "You selected the maximum great colors! Want to select more ugly colors?"
         end
       end
     else
@@ -110,8 +110,12 @@ class HomeController < ApplicationController
   end
 
   def reset
-    ColorVote.where(session_id: session[:session_id]).delete_all
-    session[:current_color] = nil
-    redirect_to root_path(new_color: true), notice: "All colors reset. Start fresh!"
+    if ColorVote.where(session_id: session[:session_id], is_ugly: true).count > 0 || ColorVote.where(session_id: session[:session_id], is_nice: true).count > 0
+      ColorVote.where(session_id: session[:session_id]).delete_all
+      session[:current_color] = nil
+      redirect_to root_path, notice: "All colors reset. Start fresh!"
+    else
+      redirect_to root_path, notice: "Colors already reset."
+    end
   end
 end
