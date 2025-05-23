@@ -58,8 +58,9 @@ class HomeController < ApplicationController
         end while ColorVote.exists?(hex_color: new_color, session_id: session[:session_id])
     
         session[:current_color] = new_color
-        @hex_color = new_color    
-    end
+        @hex_color = new_color
+      end
+    end    
   end
 
   # Backend logic for when the list order is changed
