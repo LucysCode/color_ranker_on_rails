@@ -22,7 +22,7 @@
           <!-- <li> is a list that's usually in <ul>. -->
           <!-- data-id is a data attribute. And color_vote.id is the ID # that identifies which color_vote it is, as votes come in. -->
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000; border-radius: 8px"></div>
+            <div class="side-color-box" style= "background-color: <%= color_vote.hex_color %>;"></div>
             <!-- <span> is an inline HTML element used to group and style small chunks of text or content without affecting the layout structure. Rank is hard-coded. -->
             <!-- color_vote.position starts at 0 so to let users see the ranking start at 1, add +1 to color_vote.position. -->
             <span style="font-weight: bold;">&nbsp;Rank:&nbsp;</span>
@@ -36,7 +36,7 @@
 
 
   <!-- Center Column: Color Box and Buttons -->
-  <div style="flex: 1; text-align:center;">
+  <div style="flex: 1; text-align: center;">
 
     <!-- Logic to show the color box, unless the meme shows up. -->
     <% unless @show_pikachu %>
@@ -45,32 +45,31 @@
 
     <!-- Styling for meme -->
     <% if @show_pikachu %>
-      <div style="text-align: center; margin-bottom: 10px;">
-        <img src="<%= @image_url %>" alt="Surprised Pikachu" style="max-width: 300px; height: auto; margin: 20px auto;" />
-        <br>
+      <div style="text-align: center;">
+        <img src="<%= @image_url %>" alt="Surprised Pikachu" class="meme-box" />
         <small style="font-size: 6px;">
           Image from
           <a href="https://knowyourmeme.com/memes/surprised-pikachu" target="_blank" rel="noopener noreferrer">
             Know Your Meme
           </a>
         </small>
-        <p style="text-align:center; margin-top: 10px;">Pikachu: I&rsquo;m surprised</p>
+        <p>Pikachu: I&rsquo;m surprised</p>
       </div>
     <% end %>
 
     <!-- Logic to show the hex #, unless the meme shows up. -->
     <% unless @show_pikachu %>
-      <p style="text-align:center; margin-top: 10px;">Hex Code: <%= @hex_color %></p>
+      <p>Hex Code: <%= @hex_color %></p>
     <% end %>
 
     <!-- Buttons to vote -->
-    <div style="text-align:center; margin-top: 10px;">
+    <div>
       <button onclick="submitVote('ugly')">Ew, it&rsquo;s ugly</button>
       <button onclick="submitVote('nice')">Great color</button>
     </div>
 
     <!-- Button to generate new color only -->
-    <div style="text-align:center; margin-top: 10px;">
+    <div>
       <form method="get" action="/">
         <input type="hidden" name="new_color" value="true">
         <button type="submit">Not sure, give me a new color</button>
@@ -78,7 +77,7 @@
     </div>
 
     <!-- Reset button for votes -->
-    <div style="text-align:center; margin-top: 10px;">
+    <div>
       <form method="post" action="/reset">
         <!-- Adds hidden input field that includes CSRF protection token. Required for "post" methods. -->
         <!-- Analogy: Mailing an envelope. Write stuff (inputs), seal it with stamp (token), drop it mailbox (submit), goes to address (action), handled by someone (controller). -->
@@ -89,26 +88,25 @@
     
     <!-- Message for max votes, dependent on which vote is maxed. -->
     <% if @message %>
-      <p style="color: red; text-align:center; margin-top: 10px;"><%= @message %></p>
+      <p style="color: red;"><%= @message %></p>
     <% end %>
 
     <!-- Message for when the reset button is clicked. -->
     <% if flash[:notice] %>
-      <p style="color: red; text-align:center; margin-top: 10px;"><%= flash[:notice] %></p>
+      <p style="color: red;"><%= flash[:notice] %></p>
     <% end %>
 
   </div>
 
   <!-- Right Column: Nice Colors -->
-
   <div id="nice_colors" class="sortable-list" style="flex: 1;">
     <% if @nice_colors.present? %>
       <h3>Top Nice Colors</h3>
       <ul id="nice_colors_list" style="list-style-type:none; padding: 0;">
-        
-        <% @nice_colors.each do |color_vote| %>
+
+        <% @nice_colors.take(@max_colors).each do |color_vote| %>
           <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div style="width: 75px; height: 50px; background-color: <%= color_vote.hex_color %>; border: 1px solid c#000; border-radius: 8px"></div>
+            <div class="side-color-box" style= "background-color: <%= color_vote.hex_color %>;"></div>
             <span style="font-weight: bold;">&nbsp;Rank:&nbsp;</span>
             <span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span>
           </li>

@@ -50,8 +50,15 @@ class HomeController < ApplicationController
         end
       end
     else
-      @hex_color = session[:current_color]
-      puts "New color is false BLAH"
+      if session[:current_color].present?
+        @hex_color = session[:current_color]
+      else
+        begin
+          new_color = RandomColor.random_color
+        end while ColorVote.exists?(hex_color: new_color, session_id: session[:session_id])
+    
+        session[:current_color] = new_color
+        @hex_color = new_color    
     end
   end
 
