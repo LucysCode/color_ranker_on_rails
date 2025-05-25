@@ -40,8 +40,13 @@
 
     <!-- Logic to show the color box, unless the meme shows up. -->
     <% unless @show_pikachu %>
-      <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
-      <p>Hex Code: <%= @hex_color %></p>
+      <form method="get" action="<%= root_path %>">
+        <input type="hidden" name="new_color" value="true" />
+          <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
+            <p>Hex Code: <%= @hex_color %></p>
+          </button>  
+      </form>  
     <% end %>
 
     <!-- Styling for meme -->
@@ -83,7 +88,7 @@
     </div>
 
     <!-- Route to Color Pairs page -->
-    <div style="margin: 15px;">
+    <div style="margin: 73.5px;">
       <%= link_to "Color Pairs Ranker", rank_color_pairs_path %>
     </div>
     

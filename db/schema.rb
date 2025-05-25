@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_11_164652) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_25_054301) do
+  create_table "color_pair_votes", force: :cascade do |t|
+    t.string "left_color"
+    t.string "right_color"
+    t.boolean "is_ugly"
+    t.boolean "is_nice"
+    t.string "session_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "color_pair"
+  end
+
   create_table "color_votes", force: :cascade do |t|
     t.string "hex_color"
     t.boolean "is_ugly"
@@ -19,5 +31,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_164652) do
     t.boolean "is_nice"
     t.string "session_id"
     t.integer "position"
+    t.string "left_color"
+    t.string "right_color"
   end
 end

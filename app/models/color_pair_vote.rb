@@ -1,0 +1,2 @@
+class ColorPairVote < ApplicationRecord
+end

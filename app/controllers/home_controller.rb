@@ -1,7 +1,7 @@
 # Defines a controller class called HomeController, that inherits from ApplicationController, which allows it to gain access to common behavior, like session handling, filters, etc. 
 class HomeController < ApplicationController
   # Defines constants. Constants in Ruby are written in all caps and should not be changed. Stored once on the Ruby class level.
-  MAX_COLORS = 3
+  MAX_COLORS = 6
   MAX_UGLY_COLORS = MAX_COLORS
   MAX_NICE_COLORS = MAX_COLORS
 
@@ -118,4 +118,5 @@ class HomeController < ApplicationController
       redirect_to root_path, notice: "Colors already reset."
     end
   end
+
 end

@@ -5,9 +5,11 @@ Rails.application.routes.draw do
   post "/update_position", to: "home#update_position"
 
   get "pairs/rank_color_pairs"
-  post 'vote_pair', to: 'pairs#vote_pair'
+  post '/vote_pair', to: 'pairs#vote_pair'
   post "reset_pairs", to: "pairs#reset_pairs"
   get "/rank_color_pairs", to: "pairs#rank_color_pairs"
+
+
 
   # get "/rank_color_pairs", to: "pages#index"
 
