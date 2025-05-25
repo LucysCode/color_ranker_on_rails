@@ -3,7 +3,7 @@
 <p style="text-align:center">Select up to <%= @max_colors %> ugly colors and <%= @max_colors %> great colors!</p>
 
 <!-- Middle: Ugly | Color Box | Nice -->
-<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; gap: 30px;">
+<div style="display: flex; justify-content: center;">
 
   <!-- Left Column: Ugly Colors -->
   <!-- The flex: 1; tells the element how much space it should take up relative to its siblings inside a flex container. Pulls from application.css-->
@@ -42,7 +42,7 @@
     <% unless @show_pikachu %>
       <form method="get" action="<%= root_path %>">
         <input type="hidden" name="new_color" value="true" />
-          <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
+          <button type="submit" style="border: none; background: none; padding: 0; margin: 0px; cursor: pointer;">
             <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
             <p>Hex Code: <%= @hex_color %></p>
           </button>  

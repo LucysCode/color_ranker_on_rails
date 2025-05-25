@@ -4,7 +4,8 @@
   border: 1px solid black;
   border-radius: 15px;
   margin: 0px auto;
-  display: block;
+  margin-top: 15px;
+  display: flex;
 }
 
 .side-color-box {
@@ -19,8 +20,9 @@
   width: 130px;
   height: 200px;
   border: 1px solid black;
-  border-radius: 8px;
+  border-radius: 15px;
   margin: 0px auto;
+  margin-top: 15px;
   display: flex;
   flex-direction: row;
 }

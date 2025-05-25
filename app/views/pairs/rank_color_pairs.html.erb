@@ -2,7 +2,7 @@
 <h2 style="text-align:center">Which color pair do you like better?</h2>
 <p style="text-align:center">Select up to <%= @max_pairs %> ugly pairs and <%= @max_pairs %> great pairs!</p>
 
-<div style="display: flex; justify-content: space-between; gap: 40px; margin-top: 30px;">
+<div style="display: flex; justify-content: center;">
 
   <!-- Ugly pairs column -->
   <div id="ugly_pairs" class="sortable-list" style="flex: 1;">
@@ -21,35 +21,36 @@
       <% end %>
   </div>
 
-  <!-- Color Box 1 -->
+  <!-- Middle Column: Color Box Voting -->
   <div style="flex: 1; text-align: center;">
     <% unless @show_pikachu %>
-      <div style="display: flex; justify-content: space-between; gap: 40px;">
-        <div style="text-align: center;">
-          <form method="get" action="<%= rank_color_pairs_path %>">
-            <input type="hidden" name="new_left_color" value="true" />
-            <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
-              <div class="pair-color-box" style="background-color: <%= @color_pair[0] %>;"></div>
-            </button>
-          </form>
-          <p><%= @color_pair[0] %></p>
-        </div>
 
-        <!-- Color Box 2 -->
-        <div style="text-align: center;">
-          <form method="get" action="<%= rank_color_pairs_path %>">
-            <input type="hidden" name="new_right_color" value="true" />
-            <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
-              <div class="pair-color-box" style="background-color: <%= @color_pair[1] %>;"></div>
-            </button>
-          </form>
-          <p><%= @color_pair[1] %></p>
-        </div>
+      <!-- Color Pair Display -->
+      <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+        <!-- Left Color Box -->
+        <form method="get" action="<%= rank_color_pairs_path %>">
+          <input type="hidden" name="new_left_color" value="true" />
+          <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+            <div class="pair-color-box" style="background-color: <%= @color_pair[0] %>;"></div>
+            <p>Hex: <%= @color_pair[0] %></p>
+          </button>
+        </form>
+
+        <!-- Right Color Box -->
+        <form method="get" action="<%= rank_color_pairs_path %>">
+          <input type="hidden" name="new_right_color" value="true" />
+          <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+            <div class="pair-color-box" style="background-color: <%= @color_pair[1] %>;"></div>
+            <p>Hex: <%= @color_pair[0] %></p>
+          </button>
+        </form>
       </div>
-      <% end %>
 
-    <!-- Styling for meme -->
+
+    <% end %>
+
     <% if @show_pikachu %>
+      <!-- Pikachu Meme -->
       <div style="text-align: center;">
         <img src="<%= @image_url %>" alt="Surprised Pikachu" class="meme-box" />
         <small style="font-size: 6px;">
@@ -58,14 +59,16 @@
             Know Your Meme
           </a>
         </small>
-        <p>Pikachu: I&rsquo;m surprised</p>
+        <p>Pikachu: I’m surprised</p>
       </div>
     <% end %>
 
+
+
     <!-- Buttons to vote -->
     <div style="text-align: center;">
-      <button onclick="submitPairVote('ugly', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">Ugly Pair</button>
-      <button onclick="submitPairVote('nice', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">Great Pair</button>
+      <button onclick="submitPairVote('ugly', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">Ew, it&rsquo;s ugly</button>
+      <button onclick="submitPairVote('nice', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">Great Pair!</button>
     </div>
 
     <!-- Button to get a new pair -->
