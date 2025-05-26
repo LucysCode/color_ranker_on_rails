@@ -176,11 +176,11 @@
     <% end %>
   </div>
 
+
+  
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-
-function submitPairVote(voteType, leftColor, rightColor) {
-    console.log("Submitting vote:", voteType);
-
+  function submitPairVote(voteType, leftColor, rightColor) {
     fetch('/vote_pair', {
       method: 'POST',
       headers: {
@@ -193,86 +193,69 @@ function submitPairVote(voteType, leftColor, rightColor) {
         right_color: rightColor,
       })
     })
-    .then(response => {
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      return response.text();
-    })
-    .then(data => {
-      console.log("Vote submitted successfully");
-      window.location.href = `/rank_color_pairs?new_pair=true&last_vote=${voteType}`;
-    })
-    .catch(error => {
-      console.error("Vote submission failed:", error);
-    });
+    .then(response => response.ok ? window.location.href = `/rank_color_pairs?new_pair=true&last_vote=${voteType}` : Promise.reject())
+    .catch(error => console.error("Vote submission failed:", error));
   }
 
+  document.addEventListener("turbo:load", function () {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-// Once the page is ready, run the code inside this function (before images or stylesheets finish loading). This prevents errors if JavaScript tries to work with HTML elements that haven’t been loaded yet.
-document.addEventListener("turbo:load", function () {
-  if (document.getElementById('ugly_pairs_list')) {
-    new Sortable(document.getElementById('ugly_pairs_list'), {
-      group: 'ugly',
-      onEnd: function(evt) {
-        updatePosition('ugly_pairs_list', evt.newIndex, evt.oldIndex);
+    const setupSortable = (listId, groupName) => {
+      const listElement = document.getElementById(listId);
+      if (listElement) {
+        new Sortable(listElement, {
+          group: groupName,
+          onEnd: function (evt) {
+            updatePosition(listId, evt.newIndex, evt.oldIndex, csrfToken);
+          }
+        });
       }
-    });
-  }
+    };
 
-  if (document.getElementById('nice_pairs_list')) {
-    new Sortable(document.getElementById('nice_pairs_list'), {
-      group: 'nice',
-      onEnd: function(evt) {
-        updatePosition('nice_pairs_list', evt.newIndex, evt.oldIndex);
-      }
-    });
-  }
-});
-
-function updatePosition(listId, newIndex, oldIndex) {
-  const list = document.getElementById(listId);
-  const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
-  fetch('/update_position', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': '<%= form_authenticity_token %>'
-    },
-    body: JSON.stringify({
-      ordered_ids: orderedIds,
-      list_type: listId 
-    })
-  }).then(response => {
-    if (response.ok) {
-      const items = list.querySelectorAll('li');
-      items.forEach((item, index) => {
-        item.querySelector('.position-number').textContent = index + 1; 
-      });
-    } else {
-      alert('Failed to update order');
-    }
+    setupSortable('ugly_pairs_list', 'ugly');
+    setupSortable('nice_pairs_list', 'nice');
   });
-}
 
-// Timer for notice and messages
-document.addEventListener("turbo:load", () => {
-  const notice = document.getElementById("flash-notice");
-  if (notice) {
-    setTimeout(() => {
-      notice.style.transition = "opacity 1s ease";
-      notice.style.opacity = "0";
-      setTimeout(() => notice.remove(), 1000);
-    }, 3000);
+  function updatePosition(listId, newIndex, oldIndex, csrfToken) {
+    const list = document.getElementById(listId);
+    const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
+
+    fetch('/update_position', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken
+      },
+      body: JSON.stringify({
+        ordered_ids: orderedIds,
+        list_type: listId
+      })
+    }).then(response => {
+      if (response.ok) {
+        const items = list.querySelectorAll('li');
+        items.forEach((item, index) => {
+          const positionEl = item.querySelector('.position-number');
+          if (positionEl) {
+            positionEl.textContent = index + 1;
+          }
+        });
+      } else {
+        alert('Failed to update order');
+      }
+    });
   }
 
-  const message = document.getElementById("custom-message");
-  if (message) {
-    setTimeout(() => {
-      message.style.transition = "opacity 1s ease";
-      message.style.opacity = "0";
-      setTimeout(() => message.remove(), 1000);
-    }, 3000);
-  }
-});
-
-
+  document.addEventListener("turbo:load", () => {
+    const flashMessages = ["flash-notice", "custom-message"];
+    flashMessages.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.style.transition = "opacity 1s ease";
+          el.style.opacity = "0";
+          setTimeout(() => el.remove(), 1000);
+        }, 3000);
+      }
+    });
+  });
 </script>
