@@ -1,7 +1,7 @@
 class PairsController < ApplicationController
   protect_from_forgery with: :null_session, if: -> { request.format.json? }
 
-  MAX_PAIRS = 2
+  MAX_PAIRS = 3
   MAX_UGLY_PAIRS = MAX_PAIRS
   MAX_NICE_PAIRS = MAX_PAIRS
 
@@ -39,24 +39,43 @@ class PairsController < ApplicationController
         session[:current_color_pair] = new_pair
         @color_pair = new_pair
 
-        if ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS
+        if params[:last_vote] == "ugly" &&
+          ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS
           @message = "You selected the maximum ugly pairs! Want to select more great pairs?"
-        elsif ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_NICE_PAIRS
+       elsif params[:last_vote] == "nice" &&
+             ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
           @message = "You selected the maximum nice pairs! Want to select more ugly pairs?"
-        end
+       end
+
       end
   
     elsif params[:new_left_color] == "true"
-      right_color = current_pair[1] || generate_unique_color
-      begin
-        new_left = generate_unique_color(exclude: [right_color])
-      end while ColorPairVote.exists?(left_color: new_left, right_color: right_color, session_id: session[:session_id])
-      new_pair = [new_left, right_color]
-      session[:current_color_pair] = new_pair
-      @color_pair = new_pair
-    
+      if ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS &&
+         ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
 
-    elsif params[:new_right_color] == "true"
+        @color_pair = ["#FFFFFF", "#FFFFFF"]
+        @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
+        @show_pikachu = true
+        @message = "You ranked all the pairs! Wanna reset? :)"
+      else
+        right_color = current_pair[1] || generate_unique_color
+        begin
+          new_left = generate_unique_color(exclude: [right_color])
+        end while ColorPairVote.exists?(left_color: new_left, right_color: right_color, session_id: session[:session_id])
+        new_pair = [new_left, right_color]
+        session[:current_color_pair] = new_pair
+        @color_pair = new_pair
+      end
+
+  elsif params[:new_right_color] == "true"
+    if ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS &&
+        ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
+
+      @color_pair = ["#FFFFFF", "#FFFFFF"]
+      @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
+      @show_pikachu = true
+      @message = "You ranked all the pairs! Wanna reset? :)"
+    else
       left_color = current_pair[0] || generate_unique_color
       begin
         new_right = generate_unique_color(exclude: [left_color])
@@ -64,6 +83,8 @@ class PairsController < ApplicationController
       new_pair = [left_color, new_right]
       session[:current_color_pair] = new_pair
       @color_pair = new_pair
+    end
+
 
     else
       if session[:current_color_pair].present?
@@ -160,7 +181,7 @@ class PairsController < ApplicationController
     end
   end
 
-  
+
 
   def generate_unique_color_pair
     # Generate two unique random colors that don't already exist in votes for this session

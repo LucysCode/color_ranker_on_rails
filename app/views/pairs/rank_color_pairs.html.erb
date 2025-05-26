@@ -199,7 +199,7 @@ function submitPairVote(voteType, leftColor, rightColor) {
     })
     .then(data => {
       console.log("Vote submitted successfully");
-      window.location.href = '/rank_color_pairs?new_pair=true';
+      window.location.href = `/rank_color_pairs?new_pair=true&last_vote=${voteType}`;
     })
     .catch(error => {
       console.error("Vote submission failed:", error);

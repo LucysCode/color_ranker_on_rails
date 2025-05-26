@@ -1,7 +1,7 @@
 # Defines a controller class called HomeController, that inherits from ApplicationController, which allows it to gain access to common behavior, like session handling, filters, etc. 
 class HomeController < ApplicationController
   # Defines constants. Constants in Ruby are written in all caps and should not be changed. Stored once on the Ruby class level.
-  MAX_COLORS = 2
+  MAX_COLORS = 3
   MAX_UGLY_COLORS = MAX_COLORS
   MAX_NICE_COLORS = MAX_COLORS
 
@@ -32,6 +32,7 @@ class HomeController < ApplicationController
         @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
         @show_pikachu = true
         @message = "You ranked all the colors! Wanna reset? :)"
+        @hex_color = ["#FFFFFF"]
       # Otherwise generate new colors.
       else
         begin
@@ -42,10 +43,12 @@ class HomeController < ApplicationController
         @hex_color = new_color
         
         # While generating new colors, if limit for ugly colors reached, send a message.
-        if ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS
+        if params[:last_vote] == "ugly" && 
+          ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS
           @message = "You selected the maximum ugly colors! Want to select more great colors?"
         # While generating new colors, if limit for nice colors reached, send a message.
-        elsif ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
+        elsif params[:last_vote] == "nice" && 
+          ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
           @message = "You selected the maximum great colors! Want to select more ugly colors?"
         end
       end
@@ -66,6 +69,7 @@ class HomeController < ApplicationController
         @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
         @show_pikachu = true
         @message = "You ranked all the colors! Wanna reset? :)"
+        @hex_color = ["FFFFFF"]
       end
 
     end    
