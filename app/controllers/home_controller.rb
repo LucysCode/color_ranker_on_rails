@@ -1,7 +1,7 @@
 # Defines a controller class called HomeController, that inherits from ApplicationController, which allows it to gain access to common behavior, like session handling, filters, etc. 
 class HomeController < ApplicationController
   # Defines constants. Constants in Ruby are written in all caps and should not be changed. Stored once on the Ruby class level.
-  MAX_COLORS = 6
+  MAX_COLORS = 2
   MAX_UGLY_COLORS = MAX_COLORS
   MAX_NICE_COLORS = MAX_COLORS
 
@@ -60,6 +60,14 @@ class HomeController < ApplicationController
         session[:current_color] = new_color
         @hex_color = new_color
       end
+
+      if ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS &&
+        ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
+        @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
+        @show_pikachu = true
+        @message = "You ranked all the colors! Wanna reset? :)"
+      end
+      
     end    
   end
 
@@ -116,6 +124,26 @@ class HomeController < ApplicationController
       redirect_to root_path, notice: "All colors reset. Start fresh!"
     else
       redirect_to root_path, notice: "Colors already reset."
+    end
+  end
+
+  def reset_ugly
+    if ColorVote.where(session_id: session[:session_id], is_ugly: true).count > 0 || ColorVote.where(session_id: session[:session_id], is_nice: true).count > 0
+      ColorVote.where(session_id: session[:session_id]).delete_all
+      session[:current_color] = nil
+      redirect_to root_path, notice: "All ugly colors reset!"
+    else
+      redirect_to root_path, notice: "Ugly colors already reset."
+    end
+  end
+
+  def reset_nice
+    if ColorVote.where(session_id: session[:session_id], is_ugly: true).count > 0 || ColorVote.where(session_id: session[:session_id], is_nice: true).count > 0
+      ColorVote.where(session_id: session[:session_id]).delete_all
+      session[:current_color] = nil
+      redirect_to root_path, notice: "All nice colors reset!"
+    else
+      redirect_to root_path, notice: "Nice colors already reset."
     end
   end
 

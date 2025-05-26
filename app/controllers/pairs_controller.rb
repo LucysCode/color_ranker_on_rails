@@ -1,7 +1,7 @@
 class PairsController < ApplicationController
   protect_from_forgery with: :null_session, if: -> { request.format.json? }
 
-  MAX_PAIRS = 3
+  MAX_PAIRS = 2
   MAX_UGLY_PAIRS = MAX_PAIRS
   MAX_NICE_PAIRS = MAX_PAIRS
 
@@ -69,8 +69,16 @@ class PairsController < ApplicationController
         end while ColorPairVote.exists?(left_color: new_pair[0], right_color: new_pair[1], session_id: session[:session_id])
         session[:current_color_pair] = new_pair
         @color_pair = new_pair
-
       end
+
+      if ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS &&
+          ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
+        @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
+        @show_pikachu = true
+        @message = "You ranked all the pairs! Wanna reset? :)"
+        @color_pair = ["#FFFFFF", "#FFFFFF"]
+      end
+
     end
   end
   
@@ -129,7 +137,19 @@ class PairsController < ApplicationController
   def reset_pairs
     ColorPairVote.where(session_id: session[:session_id]).delete_all
     session[:current_color_pair] = nil
-    redirect_to rank_color_pairs_path(new_pair: true), notice: "All colors reset. Start fresh!"
+    redirect_to rank_color_pairs_path(new_pair: true), notice: "All color pairs reset. Start fresh!"
+  end
+
+  def reset_ugly_pairs
+    ColorPairVote.where(session_id: session[:session_id]).delete_all
+    session[:current_color_pair] = nil
+    redirect_to rank_color_pairs_path(new_pair: true), notice: "All ugly pairs reset!"
+  end
+
+  def reset_nice_pairs
+    ColorPairVote.where(session_id: session[:session_id]).delete_all
+    session[:current_color_pair] = nil
+    redirect_to rank_color_pairs_path(new_pair: true), notice: "All nice pairs reset!"
   end
 
   def generate_unique_color_pair
