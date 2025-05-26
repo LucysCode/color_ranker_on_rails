@@ -8,10 +8,12 @@
   <div id="ugly_pairs" class="sortable-list" style="flex: 1;">
     <% if @ugly_pairs.present? %>
       <h3>Top Ugly Pairs</h3>
-      <ul id="ugly_pairs_list" style="list-style:none; padding:0;">
+      <ul id="ugly_pairs_list" style="text-align: center; list-style:none; padding:0;">
 
         <% @ugly_pairs.each do |color_pair_vote| %>
-          <li data-id="<%= color_pair_vote.id %>" style="margin: 10px 0; cursor: grab; text-align: center;">
+          <li data-id="<%= color_pair_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
+            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_pair_vote.position.to_i + 1 %></span></span>
+
             <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
               <!-- Color boxes only, centered evenly -->
               <div style="display: flex; flex-direction: column; align-items: center;">
@@ -133,26 +135,39 @@
           <%= link_to "Color Ranker", root_path %>
         </div>
 
+        <!-- Message for max votes, dependent on which vote is maxed. -->
+        <% if flash[:notice] || @message %>
+          <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">
+            <%= flash[:notice] || @message %>
+          </div>
+        <% end %>
+
+
     </div>
   
   <!-- Nice pairs column -->
   <div id="nice_pairs" class="sortable-list" style="flex: 1;">
     <% if @nice_pairs.present? %>
       <h3>Top Nice Pairs</h3>
-      <ul id="nice_pairs_list" style="list-style:none; padding:0;">
+      <ul id="nice_pairs_list" style="text-align: center; list-style:none; padding:0;">
 
         <% @nice_pairs.each do |color_pair_vote| %>
-          <li data-id="<%= color_pair_vote.id %>" style="margin: 10px 0; cursor: grab; text-align: center;">
+          <li data-id="<%= color_pair_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
+            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_pair_vote.position.to_i + 1 %></span></span>
+
             <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
               <!-- Color boxes only, centered evenly -->
               <div style="display: flex; flex-direction: column; align-items: center;">
-                <div class="pair-side-color-box pair-side-color-left" style="background-color:<%= color_pair_vote.left_color %>;"></div>
+                <div class="pair-side-color-box pair-side-color-left" style="background-color:<%= color_pair_vote.left_color %>;">
+                </div>
                 <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.left_color %></p>
               </div>
               <div style="display: flex; flex-direction: column; align-items: center;">
-                <div class="pair-side-color-box pair-side-color-right" style="background-color:<%= color_pair_vote.right_color %>;"></div>
+                <div class="pair-side-color-box pair-side-color-right" style="background-color:<%= color_pair_vote.right_color %>;">
+                </div>
                 <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.right_color %></p>
               </div>
+
             </div>
           </li>
         <% end %>
@@ -192,8 +207,8 @@ function submitPairVote(voteType, leftColor, rightColor) {
   }
 
 
-
-document.addEventListener("DOMContentLoaded", function () {
+// Once the page is ready, run the code inside this function (before images or stylesheets finish loading). This prevents errors if JavaScript tries to work with HTML elements that haven’t been loaded yet.
+document.addEventListener("turbo:load", function () {
   if (document.getElementById('ugly_pairs_list')) {
     new Sortable(document.getElementById('ugly_pairs_list'), {
       group: 'ugly',
@@ -212,5 +227,52 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+function updatePosition(listId, newIndex, oldIndex) {
+  const list = document.getElementById(listId);
+  const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
+  fetch('/update_position', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': '<%= form_authenticity_token %>'
+    },
+    body: JSON.stringify({
+      ordered_ids: orderedIds,
+      list_type: listId 
+    })
+  }).then(response => {
+    if (response.ok) {
+      const items = list.querySelectorAll('li');
+      items.forEach((item, index) => {
+        item.querySelector('.position-number').textContent = index + 1; 
+      });
+    } else {
+      alert('Failed to update order');
+    }
+  });
+}
+
+// Timer for notice and messages
+document.addEventListener("turbo:load", () => {
+  const notice = document.getElementById("flash-notice");
+  if (notice) {
+    setTimeout(() => {
+      notice.style.transition = "opacity 1s ease";
+      notice.style.opacity = "0";
+      setTimeout(() => notice.remove(), 1000);
+    }, 3000);
+  }
+
+  const message = document.getElementById("custom-message");
+  if (message) {
+    setTimeout(() => {
+      message.style.transition = "opacity 1s ease";
+      message.style.opacity = "0";
+      setTimeout(() => message.remove(), 1000);
+    }, 3000);
+  }
+});
+
 
 </script>

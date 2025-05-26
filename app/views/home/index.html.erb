@@ -13,7 +13,7 @@
       <h3>Top Ugly Colors</h3>
       <!-- <ul> stands for unordered list. An HTML element used to group a list of items where order doesn't matter (i.e., no numbering). Inside a <ul>, you typically use <li> elements. <ul> auto adds bullet points and denting. The style removes the bullet points and denting. -->
       <!-- The id is defined here, basically a label. The functionality is written in javascript block. -->
-      <ul id="ugly_colors_list" style="list-style-type:none; padding: 0;">
+      <ul id="ugly_colors_list" style="text-align: center; list-style-type:none; padding: 0;">
 
         <!-- This pulls from home_controller.rb, where @ugly_colors is an array of colors that has 'is_ugly' set to 'true'. -->
         <!-- .take Ruby method limits the number of @ugly_colors to the value of @max_colors. Taking into account the ordering defined by @ugly_colors in home_controller.rb. -->
@@ -21,12 +21,15 @@
         <% @ugly_colors.take(@max_colors).each do |color_vote| %>
           <!-- <li> is a list that's usually in <ul>. -->
           <!-- data-id is a data attribute. And color_vote.id is the ID # that identifies which color_vote it is, as votes come in. -->
-          <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div class="side-color-box" style= "background-color: <%= color_vote.hex_color %>;"></div>
+          <li data-id="<%= color_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; display: flex; justify-content: center; margin-bottom: 30px;">
+            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span></span>
+
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div class="side-color-box" style= "background-color: <%= color_vote.hex_color %>;"></div>
+              <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_vote.hex_color %></p>
             <!-- <span> is an inline HTML element used to group and style small chunks of text or content without affecting the layout structure. Rank is hard-coded. -->
             <!-- color_vote.position starts at 0 so to let users see the ranking start at 1, add +1 to color_vote.position. -->
-            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;</span>
-            <span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span>
+            </div>
           </li>
         <% end %>
     
@@ -113,15 +116,9 @@
     </div>
     
     <!-- Message for max votes, dependent on which vote is maxed. -->
-    <% if @message %>
-      <p style="color: red;"><%= @message %></p>
-    <% end %>
-
-    <!-- Message for when the reset button is clicked. -->
-
-    <% if flash[:notice] %>
-      <div id="flash-notice" class="flash-message" style="color: red">
-        <%= flash[:notice] %>
+    <% if flash[:notice] || @message %>
+      <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">
+        <%= flash[:notice] || @message %>
       </div>
     <% end %>
 
@@ -132,13 +129,16 @@
   <div id="nice_colors" class="sortable-list" style="flex: 1;">
     <% if @nice_colors.present? %>
       <h3>Top Nice Colors</h3>
-      <ul id="nice_colors_list" style="list-style-type:none; padding: 0;">
+      <ul id="nice_colors_list" style="text-align: center; list-style-type:none; padding: 0;">
 
         <% @nice_colors.take(@max_colors).each do |color_vote| %>
-          <li data-id="<%= color_vote.id %>" style="margin: 10px 0; cursor: grab; display: flex; justify-content: center;">
-            <div class="side-color-box" style= "background-color: <%= color_vote.hex_color %>;"></div>
-            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;</span>
-            <span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span>
+          <li data-id="<%= color_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; display: flex; justify-content: center; margin-bottom: 30px;">
+            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span></span>
+            
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div class="side-color-box" style= "background-color: <%= color_vote.hex_color %>;"></div>
+              <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_vote.hex_color %></p>
+            </div>
           </li>
         <% end %>
       
@@ -167,19 +167,19 @@ function submitVote(vote) {
     // Promise Handler. Runs once the server sends back a response. Response is the reply from /vote URL endpoint
   }).then(response => {
     // response.ok checks to see if server said "Success!"
-    if (response.ok) {
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       // If the response is 'success', redirect page to / end point with ?new_color=true params.
       // Does this trigger Rails app to show a new color on page load?
       window.location.href = "/?new_color=true";
       // If response fails, show the alert to the user.
-    } else {
-      alert("Failed to submit vote.");
-    }
+    })
+    .catch(error => {
+    console.error("Vote submission failed:", error);
   });
 }
 
 // Once the page is ready, run the code inside this function (before images or stylesheets finish loading). This prevents errors if JavaScript tries to work with HTML elements that haven’t been loaded yet.
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("turbo:load", function () {
   // Checks for elemeent ugly_colors_list on the page
   if (document.getElementById('ugly_colors_list')) {
     // Enables drag and drop sorting of lists. This is a new sortable list instance connecting to the DOM element with the ID ugly_colors_list
@@ -245,16 +245,25 @@ function updatePosition(listId, newIndex, oldIndex) {
 }
 
 // Timer for notice and messages
-  document.addEventListener("turbo:load", () => {
-    const notice = document.getElementById("flash-notice");
-    if (notice) {
-      setTimeout(() => {
-        notice.style.transition = "opacity 1s ease";
-        notice.style.opacity = "0";
-        setTimeout(() => notice.remove(), 1000);
-      }, 3000);
-    }
-  });
+document.addEventListener("turbo:load", () => {
+  const notice = document.getElementById("flash-notice");
+  if (notice) {
+    setTimeout(() => {
+      notice.style.transition = "opacity 1s ease";
+      notice.style.opacity = "0";
+      setTimeout(() => notice.remove(), 1000);
+    }, 3000);
+  }
+
+  const message = document.getElementById("custom-message");
+  if (message) {
+    setTimeout(() => {
+      message.style.transition = "opacity 1s ease";
+      message.style.opacity = "0";
+      setTimeout(() => message.remove(), 1000);
+    }, 3000);
+  }
+});
 
 </script>
 

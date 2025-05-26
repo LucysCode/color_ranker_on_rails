@@ -39,6 +39,11 @@ class PairsController < ApplicationController
         session[:current_color_pair] = new_pair
         @color_pair = new_pair
 
+        if ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS
+          @message = "You selected the maximum ugly pairs! Want to select more great pairs?"
+        elsif ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_NICE_PAIRS
+          @message = "You selected the maximum nice pairs! Want to select more ugly pairs?"
+        end
       end
   
     elsif params[:new_left_color] == "true"
@@ -82,26 +87,19 @@ class PairsController < ApplicationController
     end
   end
   
-  
-    # if params[:new_pair] == "true" || session[:current_color_pair].blank?
-    #   @color_pair = generate_unique_color_pair
-    # elsif params[:new_left_color] == "true"
-    #   right_color = session[:current_color_pair]&.last || generate_unique_color
-    #   left_color = generate_unique_color(exclude: [right_color])
-    #   @color_pair = [left_color, right_color]
-    # elsif params[:new_right_color] == "true"
-    #   left_color = session[:current_color_pair]&.first || generate_unique_color
-    #   right_color = generate_unique_color(exclude: [left_color])
-    #   @color_pair = [left_color, right_color]
-    # else
-    #   @color_pair = session[:current_color_pair]
-    # end  
 
   def vote_pair
     color_pair = session[:current_color_pair]
     left_color, right_color = color_pair
     is_ugly = params[:vote_type] == "ugly"
     is_nice = params[:vote_type] == "nice"
+  
+    # Prevent going over the vote limit
+    if is_ugly && ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS
+      head :forbidden and return
+    elsif is_nice && ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
+      head :forbidden and return
+    end
   
     unless ColorPairVote.exists?(
       left_color: left_color,
@@ -129,28 +127,40 @@ class PairsController < ApplicationController
   
     head :ok
   end
+    
   
 
-
-
-
   def reset_pairs
-    ColorPairVote.where(session_id: session[:session_id]).delete_all
-    session[:current_color_pair] = nil
-    redirect_to rank_color_pairs_path(new_pair: true), notice: "All color pairs reset. Start fresh!"
+    if ColorPairVote.exists?(session_id: session[:session_id])
+      ColorPairVote.where(session_id: session[:session_id]).delete_all
+      session[:current_color_pair] = nil
+      redirect_to rank_color_pairs_path, notice: "All color pairs reset. Start fresh!"
+    else
+      redirect_to rank_color_pairs_path, notice: "Color pairs already reset."
+    end
   end
 
   def reset_ugly_pairs
-    ColorPairVote.where(session_id: session[:session_id]).delete_all
-    session[:current_color_pair] = nil
-    redirect_to rank_color_pairs_path(new_pair: true), notice: "All ugly pairs reset!"
+    if ColorPairVote.exists?(session_id: session[:session_id], is_ugly: true)
+      ColorPairVote.where(session_id: session[:session_id], is_ugly: true).delete_all
+      session[:current_color_pair] = nil
+      redirect_to rank_color_pairs_path, notice: "All ugly pairs reset!"
+    else
+      redirect_to rank_color_pairs_path, notice: "Ugly pairs already reset."
+    end
   end
 
   def reset_nice_pairs
-    ColorPairVote.where(session_id: session[:session_id]).delete_all
-    session[:current_color_pair] = nil
-    redirect_to rank_color_pairs_path(new_pair: true), notice: "All nice pairs reset!"
+    if ColorPairVote.exists?(session_id: session[:session_id], is_nice: true)
+      ColorPairVote.where(session_id: session[:session_id], is_nice: true).delete_all
+      session[:current_color_pair] = nil
+      redirect_to rank_color_pairs_path(new_pair: true), notice: "All nice pairs reset!"
+    else
+      redirect_to rank_color_pairs_path, notice: "Nice pairs already reset."
+    end
   end
+
+  
 
   def generate_unique_color_pair
     # Generate two unique random colors that don't already exist in votes for this session

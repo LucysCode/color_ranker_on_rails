@@ -67,7 +67,7 @@ class HomeController < ApplicationController
         @show_pikachu = true
         @message = "You ranked all the colors! Wanna reset? :)"
       end
-      
+
     end    
   end
 
@@ -101,8 +101,22 @@ class HomeController < ApplicationController
     is_ugly = params[:vote] == "ugly"
     is_nice = params[:vote] == "nice"
 
-    unless ColorVote.exists?(hex_color: hex_color, session_id: session[:session_id])
-      position_scope = ColorVote.where(session_id: session[:session_id], is_ugly: is_ugly, is_nice: is_nice)
+    # Prevent going over the vote limit
+    if is_ugly && ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS
+      head :forbidden and return
+    elsif is_nice && ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
+      head :forbidden and return
+    end
+
+    unless ColorVote.exists?(
+      hex_color: hex_color, 
+      session_id: session[:session_id]
+    )
+      position_scope = ColorVote.where(
+        session_id: session[:session_id], 
+        is_ugly: is_ugly, 
+        is_nice: is_nice
+      )
       position = position_scope.count
 
       ColorVote.create(
@@ -118,7 +132,7 @@ class HomeController < ApplicationController
   end
 
   def reset
-    if ColorVote.where(session_id: session[:session_id], is_ugly: true).count > 0 || ColorVote.where(session_id: session[:session_id], is_nice: true).count > 0
+    if ColorVote.exists?(session_id: session[:session_id])
       ColorVote.where(session_id: session[:session_id]).delete_all
       session[:current_color] = nil
       redirect_to root_path, notice: "All colors reset. Start fresh!"
@@ -128,8 +142,8 @@ class HomeController < ApplicationController
   end
 
   def reset_ugly
-    if ColorVote.where(session_id: session[:session_id], is_ugly: true).count > 0 || ColorVote.where(session_id: session[:session_id], is_nice: true).count > 0
-      ColorVote.where(session_id: session[:session_id]).delete_all
+    if ColorVote.exists?(session_id: session[:session_id], is_ugly: true)
+      ColorVote.where(session_id: session[:session_id], is_ugly: true).delete_all
       session[:current_color] = nil
       redirect_to root_path, notice: "All ugly colors reset!"
     else
@@ -138,8 +152,8 @@ class HomeController < ApplicationController
   end
 
   def reset_nice
-    if ColorVote.where(session_id: session[:session_id], is_ugly: true).count > 0 || ColorVote.where(session_id: session[:session_id], is_nice: true).count > 0
-      ColorVote.where(session_id: session[:session_id]).delete_all
+    if ColorVote.exists?(session_id: session[:session_id], is_nice: true)
+      ColorVote.where(session_id: session[:session_id], is_nice: true).delete_all
       session[:current_color] = nil
       redirect_to root_path, notice: "All nice colors reset!"
     else
