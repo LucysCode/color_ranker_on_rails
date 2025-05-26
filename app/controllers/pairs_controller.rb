@@ -107,6 +107,30 @@ class PairsController < ApplicationController
 
     end
   end
+
+
+  def update_position
+    ordered_ids = params[:ordered_ids]
+    list_type = params[:list_type]
+
+    # Ensure the request has the correct data
+    return head :bad_request unless ordered_ids.present? && list_type.present?
+
+    # Loop through each color and update its position
+    ordered_ids.each_with_index do |id, index|
+      color_pair_vote = ColorPairVote.find_by(id: id, session_id: session[:session_id])
+      next unless color_pair_vote
+
+      # Update position only if it's the correct list
+      if list_type == "ugly_pairs_list" && color_pair_vote.is_ugly
+        color_pair_vote.update(position: index)
+      elsif list_type == "nice_pairs_list" && color_pair_vote.is_nice
+        color_pair_vote.update(position: index)
+      end
+    end
+
+    head :ok
+  end
   
 
   def vote_pair

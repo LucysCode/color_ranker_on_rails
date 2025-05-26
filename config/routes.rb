@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   post "reset_ugly_pairs", to: "pairs#reset_ugly_pairs"
   post "reset_nice_pairs", to: "pairs#reset_nice_pairs"
   get "/rank_color_pairs", to: "pairs#rank_color_pairs"
+  post '/pairs/update_position', to: 'pairs#update_position'
+
 
 
 

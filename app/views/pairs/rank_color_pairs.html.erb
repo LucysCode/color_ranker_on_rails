@@ -177,9 +177,10 @@
   </div>
 
 
-  
+
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
+
   function submitPairVote(voteType, leftColor, rightColor) {
     fetch('/vote_pair', {
       method: 'POST',
@@ -220,7 +221,7 @@
     const list = document.getElementById(listId);
     const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
 
-    fetch('/update_position', {
+    fetch('/pairs/update_position', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
