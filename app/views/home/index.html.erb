@@ -170,7 +170,7 @@ function submitVote(vote) {
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       // If the response is 'success', redirect page to / end point with ?new_color=true params.
       // Does this trigger Rails app to show a new color on page load?
-      window.location.href = "/?new_color=true";
+      window.location.href = `/?new_color=true&last_vote=${vote}`;
       // If response fails, show the alert to the user.
     })
     .catch(error => {

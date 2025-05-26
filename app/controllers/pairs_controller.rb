@@ -43,7 +43,7 @@ class PairsController < ApplicationController
           ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS
           @message = "You selected the maximum ugly pairs! Want to select more great pairs?"
        elsif params[:last_vote] == "nice" &&
-             ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
+          ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
           @message = "You selected the maximum nice pairs! Want to select more ugly pairs?"
        end
 
