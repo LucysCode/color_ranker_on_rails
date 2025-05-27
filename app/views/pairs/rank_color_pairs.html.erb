@@ -1,179 +1,193 @@
-<h1 style="text-align:center">Welcome to Color Pair Ranker!</h1>
-<h2 style="text-align:center">Which color pair do you like better?</h2>
-<p style="text-align:center">Select up to <%= @max_pairs %> ugly pairs and <%= @max_pairs %> great pairs!</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ColorPairsRanker</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-<div style="display: flex; justify-content: center;">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  
+  <body>
+    <h1 style="text-align:center">Welcome to Color Pair Ranker!</h1>
+    <h2 style="text-align:center">Which color pair do you like better?</h2>
+    <p style="text-align:center">Select up to <%= @max_pairs %> ugly pairs and <%= @max_pairs %> great pairs!</p>
+    <div class="flex flex-col md:flex-row justify-center">
 
-  <!-- Ugly pairs column -->
-  <div id="ugly_pairs" class="sortable-list" style="flex: 1;">
-    <% if @ugly_pairs.present? %>
-      <h3>Top Ugly Pairs</h3>
-      <ul id="ugly_pairs_list" style="text-align: center; list-style:none; padding:0;">
+      <!-- Ugly pairs column -->
+      <div id="ugly_pairs" class="sortable-list" style="flex: 1;">
+        <% if @ugly_pairs.present? %>
+          <h3>Top Ugly Pairs</h3>
+          <ul id="ugly_pairs_list" style="text-align: center; list-style:none; padding:0;">
 
-        <% @ugly_pairs.each do |color_pair_vote| %>
-          <li data-id="<%= color_pair_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
-            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_pair_vote.position.to_i + 1 %></span></span>
+            <% @ugly_pairs.each do |color_pair_vote| %>
+              <li data-id="<%= color_pair_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
+                <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_pair_vote.position.to_i + 1 %></span></span>
 
-            <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
-              <!-- Color boxes only, centered evenly -->
-              <div style="display: flex; flex-direction: column; align-items: center;">
-                <div class="pair-side-color-box pair-side-color-left" style="background-color:<%= color_pair_vote.left_color %>;"></div>
-                <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.left_color %></p>
-              </div>
-              <div style="display: flex; flex-direction: column; align-items: center;">
-                <div class="pair-side-color-box pair-side-color-right" style="background-color:<%= color_pair_vote.right_color %>;"></div>
-                <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.right_color %></p>
-              </div>
-            </div>
-          </li>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+                  <!-- Color boxes only, centered evenly -->
+                  <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="pair-side-color-box pair-side-color-left" style="background-color:<%= color_pair_vote.left_color %>;"></div>
+                    <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.left_color %></p>
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="pair-side-color-box pair-side-color-right" style="background-color:<%= color_pair_vote.right_color %>;"></div>
+                    <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.right_color %></p>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+
+          </ul>
+        <% end %>
+      </div>
+      
+      <!-- Middle Column: Color Box and Buttons -->
+      <div style="flex: 1; text-align: center;">
+
+        <% unless @show_pikachu %>
+          <!-- Color Pair Box Display -->
+          <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+            <!-- Left Color Box -->
+            <form method="get" action="<%= rank_color_pairs_path %>">
+              <input type="hidden" name="new_left_color" value="true" />
+              <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+                <div class="pair-color-box pair-color-box-left" style="background-color: <%= @color_pair[0] %>;"></div>
+                <p>Hex: <%= @color_pair[0] %></p>
+              </button>
+            </form>
+
+            <!-- Right Color Box -->
+            <form method="get" action="<%= rank_color_pairs_path %>">
+              <input type="hidden" name="new_right_color" value="true" />
+              <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+                <div class="pair-color-box pair-color-box-right" style="background-color: <%= @color_pair[1] %>;"></div>
+                <p>Hex: <%= @color_pair[1] %></p>
+              </button>
+            </form>
+          </div>
         <% end %>
 
-      </ul>
-    <% end %>
-  </div>
-  
-  <!-- Middle Column: Color Box and Buttons -->
-  <div style="flex: 1; text-align: center;">
-
-    <% unless @show_pikachu %>
-      <!-- Color Pair Box Display -->
-      <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
-        <!-- Left Color Box -->
-        <form method="get" action="<%= rank_color_pairs_path %>">
-          <input type="hidden" name="new_left_color" value="true" />
-          <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
-            <div class="pair-color-box pair-color-box-left" style="background-color: <%= @color_pair[0] %>;"></div>
-            <p>Hex: <%= @color_pair[0] %></p>
-          </button>
-        </form>
-
-        <!-- Right Color Box -->
-        <form method="get" action="<%= rank_color_pairs_path %>">
-          <input type="hidden" name="new_right_color" value="true" />
-          <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
-            <div class="pair-color-box pair-color-box-right" style="background-color: <%= @color_pair[1] %>;"></div>
-            <p>Hex: <%= @color_pair[1] %></p>
-          </button>
-        </form>
-      </div>
-    <% end %>
-
-    <% if @show_pikachu %>
-      <!-- Pikachu Meme -->
-      <div style="text-align: center;">
-        <img src="<%= @image_url %>" alt="Surprised Pikachu" class="meme-box" />
-        <small style="font-size: 6px;">
-          Image from
-          <a href="https://knowyourmeme.com/memes/surprised-pikachu" target="_blank" rel="noopener noreferrer">
-            Know Your Meme
-          </a>
-        </small> 
-        <p>Pikachu: I&rsquo;m surprised</p>
-      </div>
-    <% end %>
-
-    <!-- Buttons to vote -->
-    <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
-      <div style="flex: 1;">
-        <button style="width: 100%;" onclick="submitPairVote('ugly', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">
-          Ew, it&rsquo;s ugly
-        </button>
-      </div>
-      <div style="flex: 1;">
-        <button style="width: 100%;" onclick="submitPairVote('nice', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">
-          Great pair!
-        </button>
-      </div>
-    </div>
-
-    <!-- Button to get a new pair -->
-    <div style="display: flex; justify-content: center;">
-      <form method="get" action="<%= rank_color_pairs_path %>">
-        <input type="hidden" name="new_pair" value="true" />
-        <button type="submit">New Color Pair</button>
-      </form>
-    </div>
-
-    <!-- Buttons to generate new left or right color -->
-    <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
-      <form method="get" action="<%= rank_color_pairs_path %>" style="flex: 1;">
-        <input type="hidden" name="new_left_color" value="true" />
-        <button type="submit" style="width: 100%;">New Left Color</button>
-      </form>
-
-      <form method="get" action="<%= rank_color_pairs_path %>" style="flex: 1;">
-        <input type="hidden" name="new_right_color" value="true" />
-        <button type="submit" style="width: 100%;">New Right Color</button>
-      </form>
-    </div>
-
-    <!-- Reset votes -->
-
-    <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
-      <form method="post" action="<%= reset_ugly_pairs_path %>" style="flex: 1;">
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <button type="submit" style="width: 100%;">Reset Ugly Pairs</button>
-      </form>
-
-      <form method="post" action="<%= reset_nice_pairs_path %>" style="flex: 1;">
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <button type="submit" style="width: 100%;">Reset Nice Pairs</button>
-      </form>
-    </div>
-
-    <div style="text-align: center;">
-      <form method="post" action="<%= reset_pairs_path %>">
-        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-        <button type="submit">Reset all pairs</button>
-      </form>
-    </div>
-
-    <!-- Route to Color Pairs page -->
-    <div style="text-align: center; margin: 15px">
-      <%= link_to "Color Ranker", root_path %>
-    </div>
-
-    <!-- Message for max votes, dependent on which vote is maxed. -->
-    <% if flash[:notice] || @message %>
-      <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">
-        <%= flash[:notice] || @message %>
-      </div>
-    <% end %>
-
-
-  </div>
-  
-  <!-- Nice pairs column -->
-  <div id="nice_pairs" class="sortable-list" style="flex: 1;">
-    <% if @nice_pairs.present? %>
-      <h3>Top Nice Pairs</h3>
-      <ul id="nice_pairs_list" style="text-align: center; list-style:none; padding:0;">
-
-        <% @nice_pairs.each do |color_pair_vote| %>
-          <li data-id="<%= color_pair_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
-            <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_pair_vote.position.to_i + 1 %></span></span>
-
-            <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
-              <!-- Color boxes only, centered evenly -->
-              <div style="display: flex; flex-direction: column; align-items: center;">
-                <div class="pair-side-color-box pair-side-color-left" style="background-color:<%= color_pair_vote.left_color %>;">
-                </div>
-                <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.left_color %></p>
-              </div>
-              <div style="display: flex; flex-direction: column; align-items: center;">
-                <div class="pair-side-color-box pair-side-color-right" style="background-color:<%= color_pair_vote.right_color %>;">
-                </div>
-                <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.right_color %></p>
-              </div>
-
-            </div>
-          </li>
+        <% if @show_pikachu %>
+          <!-- Pikachu Meme -->
+          <div style="text-align: center;">
+            <img src="<%= @image_url %>" alt="Surprised Pikachu" class="meme-box" />
+            <small style="font-size: 6px;">
+              Image from
+              <a href="https://knowyourmeme.com/memes/surprised-pikachu" target="_blank" rel="noopener noreferrer">
+                Know Your Meme
+              </a>
+            </small> 
+            <p>Pikachu: I&rsquo;m surprised</p>
+          </div>
         <% end %>
 
-      </ul>
-    <% end %>
-  </div>
+        <!-- Buttons to vote -->
+        <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
+          <div style="flex: 1;">
+            <button style="width: 100%;" onclick="submitPairVote('ugly', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">
+              Ew, it&rsquo;s ugly
+            </button>
+          </div>
+          <div style="flex: 1;">
+            <button style="width: 100%;" onclick="submitPairVote('nice', '<%= @color_pair[0] %>', '<%= @color_pair[1] %>')">
+              Great pair!
+            </button>
+          </div>
+        </div>
 
+        <!-- Button to get a new pair -->
+        <div style="display: flex; justify-content: center;">
+          <form method="get" action="<%= rank_color_pairs_path %>">
+            <input type="hidden" name="new_pair" value="true" />
+            <button type="submit">New Color Pair</button>
+          </form>
+        </div>
+
+        <!-- Buttons to generate new left or right color -->
+        <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
+          <form method="get" action="<%= rank_color_pairs_path %>" style="flex: 1;">
+            <input type="hidden" name="new_left_color" value="true" />
+            <button type="submit" style="width: 100%;">New Left Color</button>
+          </form>
+
+          <form method="get" action="<%= rank_color_pairs_path %>" style="flex: 1;">
+            <input type="hidden" name="new_right_color" value="true" />
+            <button type="submit" style="width: 100%;">New Right Color</button>
+          </form>
+        </div>
+
+        <!-- Reset votes -->
+
+        <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
+          <form method="post" action="<%= reset_ugly_pairs_path %>" style="flex: 1;">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <button type="submit" style="width: 100%;">Reset Ugly Pairs</button>
+          </form>
+
+          <form method="post" action="<%= reset_nice_pairs_path %>" style="flex: 1;">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <button type="submit" style="width: 100%;">Reset Nice Pairs</button>
+          </form>
+        </div>
+
+        <div style="text-align: center;">
+          <form method="post" action="<%= reset_pairs_path %>">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <button type="submit">Reset all pairs</button>
+          </form>
+        </div>
+
+        <!-- Route to Color Pairs page -->
+        <div style="text-align: center; margin: 15px">
+          <%= link_to "Color Ranker", root_path %>
+        </div>
+
+        <!-- Message for max votes, dependent on which vote is maxed. -->
+        <% if flash[:notice] || @message %>
+          <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">
+            <%= flash[:notice] || @message %>
+          </div>
+        <% end %>
+
+
+      </div>
+      
+      <!-- Nice pairs column -->
+      <div id="nice_pairs" class="sortable-list" style="flex: 1;">
+        <% if @nice_pairs.present? %>
+          <h3>Top Nice Pairs</h3>
+          <ul id="nice_pairs_list" style="text-align: center; list-style:none; padding:0;">
+
+            <% @nice_pairs.each do |color_pair_vote| %>
+              <li data-id="<%= color_pair_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
+                <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_pair_vote.position.to_i + 1 %></span></span>
+
+                <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+                  <!-- Color boxes only, centered evenly -->
+                  <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="pair-side-color-box pair-side-color-left" style="background-color:<%= color_pair_vote.left_color %>;">
+                    </div>
+                    <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.left_color %></p>
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="pair-side-color-box pair-side-color-right" style="background-color:<%= color_pair_vote.right_color %>;">
+                    </div>
+                    <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.right_color %></p>
+                  </div>
+
+                </div>
+              </li>
+            <% end %>
+
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </body>
+</html>
 
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
