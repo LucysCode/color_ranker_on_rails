@@ -32,11 +32,11 @@
     <% end %>
   </div>
   
-  <!-- Middle Column: Color Box Voting -->
+  <!-- Middle Column: Color Box and Buttons -->
   <div style="flex: 1; text-align: center;">
-    <% unless @show_pikachu %>
 
-      <!-- Color Pair Display -->
+    <% unless @show_pikachu %>
+      <!-- Color Pair Box Display -->
       <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
         <!-- Left Color Box -->
         <form method="get" action="<%= rank_color_pairs_path %>">
@@ -56,8 +56,6 @@
           </button>
         </form>
       </div>
-
-
     <% end %>
 
     <% if @show_pikachu %>
@@ -109,41 +107,41 @@
       </form>
     </div>
 
-        <!-- Reset votes -->
+    <!-- Reset votes -->
 
-        <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
-          <form method="post" action="<%= reset_ugly_pairs_path %>" style="flex: 1;">
-            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-            <button type="submit" style="width: 100%;">Reset Ugly Pairs</button>
-          </form>
+    <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
+      <form method="post" action="<%= reset_ugly_pairs_path %>" style="flex: 1;">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" style="width: 100%;">Reset Ugly Pairs</button>
+      </form>
 
-          <form method="post" action="<%= reset_nice_pairs_path %>" style="flex: 1;">
-            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-            <button type="submit" style="width: 100%;">Reset Nice Pairs</button>
-          </form>
-        </div>
-
-        <div style="text-align: center;">
-          <form method="post" action="<%= reset_pairs_path %>">
-            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-            <button type="submit">Reset all pairs</button>
-          </form>
-        </div>
-
-        <!-- Route to Color Pairs page -->
-        <div style="text-align: center; margin: 15px">
-          <%= link_to "Color Ranker", root_path %>
-        </div>
-
-        <!-- Message for max votes, dependent on which vote is maxed. -->
-        <% if flash[:notice] || @message %>
-          <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">
-            <%= flash[:notice] || @message %>
-          </div>
-        <% end %>
-
-
+      <form method="post" action="<%= reset_nice_pairs_path %>" style="flex: 1;">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit" style="width: 100%;">Reset Nice Pairs</button>
+      </form>
     </div>
+
+    <div style="text-align: center;">
+      <form method="post" action="<%= reset_pairs_path %>">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <button type="submit">Reset all pairs</button>
+      </form>
+    </div>
+
+    <!-- Route to Color Pairs page -->
+    <div style="text-align: center; margin: 15px">
+      <%= link_to "Color Ranker", root_path %>
+    </div>
+
+    <!-- Message for max votes, dependent on which vote is maxed. -->
+    <% if flash[:notice] || @message %>
+      <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">
+        <%= flash[:notice] || @message %>
+      </div>
+    <% end %>
+
+
+  </div>
   
   <!-- Nice pairs column -->
   <div id="nice_pairs" class="sortable-list" style="flex: 1;">
