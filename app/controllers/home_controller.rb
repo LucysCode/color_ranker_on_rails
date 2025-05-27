@@ -39,21 +39,11 @@ class HomeController < ApplicationController
         if params[:last_vote] == "ugly" && 
           ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS
           @message = "You selected the maximum ugly colors! Want to select more great colors?"
-          # begin
-          #   new_color = RandomColor.random_color
-          # end while ColorVote.exists?(hex_color: new_color, session_id: session[:session_id])
-  
-          # session[:current_color] = new_color
-          # @hex_color = new_color
+          
         elsif params[:last_vote] == "nice" && 
           ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
           @message = "You selected the maximum great colors! Want to select more ugly colors?"
-          # begin
-          #   new_color = RandomColor.random_color
-          # end while ColorVote.exists?(hex_color: new_color, session_id: session[:session_id])
-  
-          # session[:current_color] = new_color
-          # @hex_color = new_color
+
         end
       end
 
