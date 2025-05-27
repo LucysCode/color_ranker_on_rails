@@ -178,7 +178,6 @@ class PairsController < ApplicationController
   def reset_pairs
     if ColorPairVote.exists?(session_id: session[:session_id])
       ColorPairVote.where(session_id: session[:session_id]).delete_all
-      session[:current_color_pair] = nil
       redirect_to rank_color_pairs_path, notice: "All color pairs reset. Start fresh!"
     else
       redirect_to rank_color_pairs_path, notice: "Color pairs already reset."
@@ -188,7 +187,6 @@ class PairsController < ApplicationController
   def reset_ugly_pairs
     if ColorPairVote.exists?(session_id: session[:session_id], is_ugly: true)
       ColorPairVote.where(session_id: session[:session_id], is_ugly: true).delete_all
-      session[:current_color_pair] = nil
       redirect_to rank_color_pairs_path, notice: "All ugly pairs reset!"
     else
       redirect_to rank_color_pairs_path, notice: "Ugly pairs already reset."
@@ -198,8 +196,7 @@ class PairsController < ApplicationController
   def reset_nice_pairs
     if ColorPairVote.exists?(session_id: session[:session_id], is_nice: true)
       ColorPairVote.where(session_id: session[:session_id], is_nice: true).delete_all
-      session[:current_color_pair] = nil
-      redirect_to rank_color_pairs_path(new_pair: true), notice: "All nice pairs reset!"
+      redirect_to rank_color_pairs_path, notice: "All nice pairs reset!"
     else
       redirect_to rank_color_pairs_path, notice: "Nice pairs already reset."
     end
