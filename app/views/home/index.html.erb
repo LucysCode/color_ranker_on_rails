@@ -165,18 +165,12 @@ function submitVote(vote) {
   });
 }
 
-// Once the page is ready, run the code inside this function (before images or stylesheets finish loading). This prevents errors if JavaScript tries to work with HTML elements that haven’t been loaded yet.
+// Drag and drop
 document.addEventListener("turbo:load", function () {
-  // Checks for elemeent ugly_colors_list on the page
   if (document.getElementById('ugly_colors_list')) {
-    // Enables drag and drop sorting of lists. This is a new sortable list instance connecting to the DOM element with the ID ugly_colors_list
     new Sortable(document.getElementById('ugly_colors_list'), {
-      // This groups the sortable list to the group named 'ugly'. AKA this is part of the 'ugly' group.
       group: 'ugly',
-      // Defines an event handler. Code that runs when the drag ends and the item (color) is dropped.
       onEnd: function(evt) {
-        // This calls the function updatePosition Javascript further down in the code. 
-        // It passes the list name (ugly_colors_list), the new position (evt.newIndex), and the original position (evt.oldIndex). AKA a color moved, update the database to reflect its new position. 
         updatePosition('ugly_colors_list', evt.newIndex, evt.oldIndex);
       }
     });
@@ -192,17 +186,12 @@ document.addEventListener("turbo:load", function () {
   }
 });
 
-// This function takes in 3 parameters: listId (id of HTML list being updated), newIndex (new position of item moved), oldIndex (old position of item).
+// Update position for drag and drop
 function updatePosition(listId, newIndex, oldIndex) {
-  // Finds the HTML list (ul) on the page by its ID and saves it to the list variable. Line 107 for example.
   const list = document.getElementById(listId);
-  // Create an array (orderedIds) by converting all <li> elements inside list into an array, then mapping each li to its data-id value.
   const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
 
-  // Update the order on the server
-  // Sends a POST request to your Rails server at /update_position.
   fetch('/update_position', {
-    // Same as block of code from function submitVote
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -210,20 +199,13 @@ function updatePosition(listId, newIndex, oldIndex) {
     },
     // Data I'm sending
     body: JSON.stringify({
-      ordered_ids: orderedIds, // An array of color vote ids (in new order)
-      list_type: listId // Which list it came from: ugly_colors_list, or nice_colors_list
+      ordered_ids: orderedIds,
     })
-    // When the server responds do the following block of code
   }).then(response => {
-    // If the server response is successful
     if (response.ok) {
-      // Once the order is updated successfully, update the position number on the frontend
-      // Gets all the current list items again
       const items = list.querySelectorAll('li');
-      // Loops through each item and updates its visible number
       items.forEach((item, index) => {
-        // It finds the span or element with class .position-number inside each item and updates its content to match the new position
-        item.querySelector('.position-number').textContent = index + 1; // Update the position number on the frontend
+        item.querySelector('.position-number').textContent = index + 1; 
       });
     } else {
       alert('Failed to update order');
