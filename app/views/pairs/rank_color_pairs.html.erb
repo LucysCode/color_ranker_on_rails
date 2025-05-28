@@ -8,12 +8,101 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+      /* Mobile-specific styles */
+      @media (max-width: 768px) {
+        .mobile-view-results-btn {
+          display: block;
+          width: 200px;
+          margin: 15px auto;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          padding: 12px 20px;
+          font-size: 16px;
+          border-radius: 25px;
+          cursor: pointer;
+        }
+
+        .mobile-back-btn {
+          display: none;
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          background-color: #2196F3;
+          color: white;
+          border: none;
+          padding: 10px 15px;
+          font-size: 14px;
+          border-radius: 20px;
+          cursor: pointer;
+          z-index: 1000;
+        }
+
+        /* Hide side columns by default on mobile */
+        .mobile-main-view #ugly_pairs,
+        .mobile-main-view #nice_pairs {
+          display: none !important;
+        }
+
+        /* Show only middle column in main view */
+        .mobile-main-view .main-container {
+          display: flex;
+          justify-content: center;
+        }
+
+        .mobile-main-view .middle-column {
+          flex: 1;
+          max-width: 100%;
+        }
+
+        /* Results view styles */
+        .mobile-results-view .middle-column {
+          display: none !important;
+        }
+
+        .mobile-results-view #ugly_pairs,
+        .mobile-results-view #nice_pairs {
+          display: block !important;
+          flex: 1;
+        }
+
+        .mobile-results-view .mobile-back-btn {
+          display: block;
+        }
+
+        .mobile-results-view .mobile-view-results-btn {
+          display: none;
+        }
+
+        /* Adjust main container for results view */
+        .mobile-results-view .main-container {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          margin-top: 60px; /* Space for back button */
+        }
+      }
+
+      /* Desktop styles - hide mobile buttons */
+      @media (min-width: 769px) {
+        .mobile-view-results-btn,
+        .mobile-back-btn {
+          display: none !important;
+        }
+      }
+    </style>
   </head>
-  <h1 style="text-align:center">Welcome to Color Pair Ranker!</h1>
-  <h2 style="text-align:center">Which color pair do you like better?</h2>
-  <p style="text-align:center">Select up to <%= @max_pairs %> ugly pairs and <%= @max_pairs %> great pairs!</p>
-  <body>
-    <div style="display: flex; justify-content: center;">
+  <body class="mobile-main-view">
+    <h1 style="text-align:center">Welcome to Color Pair Ranker!</h1>
+    <h2 style="text-align:center">Which color pair do you like better?</h2>
+    <p style="text-align:center">Select up to <%= @max_pairs %> ugly pairs and <%= @max_pairs %> great pairs!</p>
+    
+    <!-- Mobile Back Button -->
+    <button class="mobile-back-btn" onclick="showMainView()">← Back</button>
+    
+    <div class="main-container" style="display: flex; justify-content: center;">
 
       <!-- Ugly pairs column -->
       <div id="ugly_pairs" class="sortable-list" style="flex: 1;">
@@ -44,7 +133,10 @@
       </div>
       
       <!-- Middle Column: Color Box and Buttons -->
-      <div style="flex: 1; text-align: center;">
+      <div class="middle-column" style="flex: 1; text-align: center;">
+
+        <!-- Mobile View Results Button -->
+        <button class="mobile-view-results-btn" onclick="showResultsView()">View Results</button>
 
         <% unless @show_pikachu %>
           <!-- Color Pair Box Display -->
@@ -119,7 +211,6 @@
         </div>
 
         <!-- Reset votes -->
-
         <div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0 auto;">
           <form method="post" action="<%= reset_ugly_pairs_path %>" style="flex: 1;">
             <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
@@ -150,7 +241,6 @@
             <%= flash[:notice] || @message %>
           </div>
         <% end %>
-
 
       </div>
       
@@ -185,89 +275,99 @@
         <% end %>
       </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+
+      function submitPairVote(voteType, leftColor, rightColor) {
+        fetch('/vote_pair', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            vote_type: voteType,
+            left_color: leftColor,
+            right_color: rightColor,
+          })
+        })
+        .then(response => response.ok ? window.location.href = `/rank_color_pairs?new_pair=true&last_vote=${voteType}` : Promise.reject())
+        .catch(error => console.error("Vote submission failed:", error));
+      }
+
+      // Mobile view toggle functions - defined globally so onclick can access them
+      window.showResultsView = function() {
+        document.body.className = 'mobile-results-view';
+      }
+
+      window.showMainView = function() {
+        document.body.className = 'mobile-main-view';
+      }
+
+
+      document.addEventListener("turbo:load", function () {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        const setupSortable = (listId, groupName) => {
+          const listElement = document.getElementById(listId);
+          if (listElement) {
+            new Sortable(listElement, {
+              group: groupName,
+              onEnd: function (evt) {
+                updatePosition(listId, evt.newIndex, evt.oldIndex, csrfToken);
+              }
+            });
+          }
+        };
+
+        setupSortable('ugly_pairs_list', 'ugly');
+        setupSortable('nice_pairs_list', 'nice');
+      });
+
+      function updatePosition(listId, newIndex, oldIndex, csrfToken) {
+        const list = document.getElementById(listId);
+        const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
+
+        fetch('/pairs/update_position', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+          },
+          body: JSON.stringify({
+            ordered_ids: orderedIds,
+            list_type: listId
+          })
+        }).then(response => {
+          if (response.ok) {
+            const items = list.querySelectorAll('li');
+            items.forEach((item, index) => {
+              const positionEl = item.querySelector('.position-number');
+              if (positionEl) {
+                positionEl.textContent = index + 1;
+              }
+            });
+          } else {
+            alert('Failed to update order');
+          }
+        });
+      }
+
+      document.addEventListener("turbo:load", () => {
+        const flashMessages = ["flash-notice", "custom-message"];
+        flashMessages.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            setTimeout(() => {
+              el.style.transition = "opacity 1s ease";
+              el.style.opacity = "0";
+              setTimeout(() => el.remove(), 1000);
+            }, 3000);
+          }
+        });
+      });
+    </script>
+
   </body>
 </html>
-
-
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script>
-
-  function submitPairVote(voteType, leftColor, rightColor) {
-    fetch('/vote_pair', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-      },
-      body: JSON.stringify({
-        vote_type: voteType,
-        left_color: leftColor,
-        right_color: rightColor,
-      })
-    })
-    .then(response => response.ok ? window.location.href = `/rank_color_pairs?new_pair=true&last_vote=${voteType}` : Promise.reject())
-    .catch(error => console.error("Vote submission failed:", error));
-  }
-
-  document.addEventListener("turbo:load", function () {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-
-    const setupSortable = (listId, groupName) => {
-      const listElement = document.getElementById(listId);
-      if (listElement) {
-        new Sortable(listElement, {
-          group: groupName,
-          onEnd: function (evt) {
-            updatePosition(listId, evt.newIndex, evt.oldIndex, csrfToken);
-          }
-        });
-      }
-    };
-
-    setupSortable('ugly_pairs_list', 'ugly');
-    setupSortable('nice_pairs_list', 'nice');
-  });
-
-  function updatePosition(listId, newIndex, oldIndex, csrfToken) {
-    const list = document.getElementById(listId);
-    const orderedIds = Array.from(list.querySelectorAll('li')).map((li) => li.dataset.id);
-
-    fetch('/pairs/update_position', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
-      },
-      body: JSON.stringify({
-        ordered_ids: orderedIds,
-        list_type: listId
-      })
-    }).then(response => {
-      if (response.ok) {
-        const items = list.querySelectorAll('li');
-        items.forEach((item, index) => {
-          const positionEl = item.querySelector('.position-number');
-          if (positionEl) {
-            positionEl.textContent = index + 1;
-          }
-        });
-      } else {
-        alert('Failed to update order');
-      }
-    });
-  }
-
-  document.addEventListener("turbo:load", () => {
-    const flashMessages = ["flash-notice", "custom-message"];
-    flashMessages.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        setTimeout(() => {
-          el.style.transition = "opacity 1s ease";
-          el.style.opacity = "0";
-          setTimeout(() => el.remove(), 1000);
-        }, 3000);
-      }
-    });
-  });
-</script>
