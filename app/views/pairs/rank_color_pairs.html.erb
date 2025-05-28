@@ -6,93 +6,10 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "mobile_responsive", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <style>
-      /* Mobile-specific styles */
-      @media (max-width: 768px) {
-        .mobile-view-results-btn {
-          display: block;
-          width: 200px;
-          margin: 15px auto;
-          background-color: #4CAF50;
-          color: white;
-          border: none;
-          padding: 12px 20px;
-          font-size: 16px;
-          border-radius: 25px;
-          cursor: pointer;
-        }
 
-        .mobile-back-btn {
-          display: none;
-          position: absolute;
-          top: 20px;
-          left: 20px;
-          background-color: #2196F3;
-          color: white;
-          border: none;
-          padding: 10px 15px;
-          font-size: 14px;
-          border-radius: 20px;
-          cursor: pointer;
-          z-index: 1000;
-        }
-
-        /* Hide side columns by default on mobile */
-        .mobile-main-view #ugly_pairs,
-        .mobile-main-view #nice_pairs {
-          display: none !important;
-        }
-
-        /* Show only middle column in main view */
-        .mobile-main-view .main-container {
-          display: flex;
-          justify-content: center;
-        }
-
-        .mobile-main-view .middle-column {
-          flex: 1;
-          max-width: 100%;
-        }
-
-        /* Results view styles */
-        .mobile-results-view .middle-column {
-          display: none !important;
-        }
-
-        .mobile-results-view #ugly_pairs,
-        .mobile-results-view #nice_pairs {
-          display: block !important;
-          flex: 1;
-        }
-
-        .mobile-results-view .mobile-back-btn {
-          display: block;
-        }
-
-        .mobile-results-view .mobile-view-results-btn {
-          display: none;
-        }
-
-        /* Adjust main container for results view */
-        .mobile-results-view .main-container {
-          display: flex;
-          justify-content: space-between;
-          gap: 10px;
-          margin-top: 60px; /* Space for back button */
-        }
-      }
-
-      /* Desktop styles - hide mobile buttons */
-      @media (min-width: 769px) {
-        .mobile-view-results-btn,
-        .mobile-back-btn {
-          display: none !important;
-        }
-      }
-    </style>
   </head>
   <body class="mobile-main-view">
     <h1 style="text-align:center">Welcome to Color Pair Ranker!</h1>
