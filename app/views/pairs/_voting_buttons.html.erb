@@ -1,0 +1,18 @@
+<%# Voting Buttons Partial %>
+<%# 
+  Expected locals:
+  - color_pair: array with two colors [left_color, right_color]
+%>
+
+<div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 20px auto;">
+  <div style="flex: 1;">
+    <button style="width: 100%;" onclick="submitPairVote('ugly', '<%= color_pair[0] %>', '<%= color_pair[1] %>')">
+      Ew, it&rsquo;s ugly
+    </button>
+  </div>
+  <div style="flex: 1;">
+    <button style="width: 100%;" onclick="submitPairVote('nice', '<%= color_pair[0] %>', '<%= color_pair[1] %>')">
+      Great pair!
+    </button>
+  </div>
+</div>

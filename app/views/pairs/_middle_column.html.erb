@@ -1,0 +1,73 @@
+<%# Middle Column Component %>
+<%# 
+  Expected locals from controller:
+  - @color_pair: array with two colors
+  - @show_pikachu: boolean
+  - @image_url: pikachu image URL
+  - @max_pairs: maximum pairs allowed
+  - flash: flash messages
+  - @message: custom message
+%>
+
+<div class="middle-column" style="flex: 1; text-align: center;">
+  <!-- Mobile View Results Button -->
+  <button class="mobile-view-results-btn" onclick="showResultsView()">View Results</button>
+
+  <% unless @show_pikachu %>
+    <!-- Color Pair Box Display -->
+    <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+      <!-- Left Color Box -->
+      <form method="get" action="<%= rank_color_pairs_path %>">
+        <input type="hidden" name="new_left_color" value="true" />
+        <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+          <div class="pair-color-box pair-color-box-left" style="background-color: <%= @color_pair[0] %>;"></div>
+          <p>Hex: <%= @color_pair[0] %></p>
+        </button>
+      </form>
+
+      <!-- Right Color Box -->
+      <form method="get" action="<%= rank_color_pairs_path %>">
+        <input type="hidden" name="new_right_color" value="true" />
+        <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+          <div class="pair-color-box pair-color-box-right" style="background-color: <%= @color_pair[1] %>;"></div>
+          <p>Hex: <%= @color_pair[1] %></p>
+        </button>
+      </form>
+    </div>
+  <% end %>
+
+  <% if @show_pikachu %>
+    <!-- Pikachu Meme -->
+    <div style="text-align: center;">
+      <img src="<%= @image_url %>" alt="Surprised Pikachu" class="meme-box" />
+      <small style="font-size: 6px;">
+        Image from
+        <a href="https://knowyourmeme.com/memes/surprised-pikachu" target="_blank" rel="noopener noreferrer">
+          Know Your Meme
+        </a>
+      </small> 
+      <p>Pikachu: I&rsquo;m surprised</p>
+    </div>
+  <% end %>
+
+  <!-- Voting Buttons -->
+  <%= render 'voting_buttons', color_pair: @color_pair %>
+
+  <!-- Navigation Buttons -->
+  <%= render 'navigation_buttons' %>
+
+  <!-- Reset Buttons -->
+  <%= render 'reset_buttons' %>
+
+  <!-- Route to Color Pairs page -->
+  <div style="text-align: center; margin: 15px">
+    <%= link_to "Color Ranker", root_path %>
+  </div>
+
+  <!-- Flash Messages -->
+  <% if flash[:notice] || @message %>
+    <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">
+      <%= flash[:notice] || @message %>
+    </div>
+  <% end %>
+</div>

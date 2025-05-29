@@ -1,0 +1,34 @@
+<%# Color Pair Column Component %>
+<%# 
+  Expected locals:
+  - pairs: array of color pair votes
+  - column_type: 'ugly' or 'nice'
+  - title: string for the column header
+%>
+
+<div id="<%= column_type %>_pairs" class="sortable-list" style="flex: 1;">
+  <% if pairs.present? %>
+    <h3><%= title %></h3>
+    <ul id="<%= column_type %>_pairs_list" style="text-align: center; list-style:none; padding:0;">
+      <% pairs.each do |color_pair_vote| %>
+        <li data-id="<%= color_pair_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
+          <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_pair_vote.position.to_i + 1 %></span></span>
+
+          <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+            <!-- Left Color Box -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div class="pair-side-color-box pair-side-color-left" style="background-color:<%= color_pair_vote.left_color %>;"></div>
+              <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.left_color %></p>
+            </div>
+            
+            <!-- Right Color Box -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div class="pair-side-color-box pair-side-color-right" style="background-color:<%= color_pair_vote.right_color %>;"></div>
+              <p style="margin: 4px 0 0 0; font-size: 12px;">Hex: <%= color_pair_vote.right_color %></p>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
