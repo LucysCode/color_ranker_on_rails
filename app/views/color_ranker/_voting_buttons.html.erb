@@ -1,0 +1,18 @@
+<%# Voting Buttons Partial %>
+<%# 
+  Expected locals:
+  - hex_color: array with one color
+%>
+
+<div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 20px auto;">
+  <div style="flex: 1;">
+    <button style="width: 100%;" onclick="submitVote('ugly', '<%= hex_color %>')">
+      Ew, it&rsquo;s ugly
+    </button>
+  </div>
+  <div style="flex: 1;">
+    <button style="width: 100%;" onclick="submitVote('nice', '<%= hex_color %>')">
+      Great color!
+    </button>
+  </div>
+</div>

@@ -15,15 +15,15 @@
   
     .mobile-back-btn {
       display: none;
-      position: absolute;
-      top: 20px;
-      left: 20px;
+      position: sticky;
+      top: 177px;
+      margin: 15px auto;
       background-color: #2196F3;
       color: white;
       border: none;
-      padding: 10px 15px;
-      font-size: 14px;
-      border-radius: 20px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 25px;
       cursor: pointer;
       z-index: 1000;
     }
@@ -38,6 +38,12 @@
     .mobile-main-view .main-container {
       display: flex;
       justify-content: center;
+    }
+
+    /* Hide side columns by default on mobile */
+    .mobile-main-view #ugly_colors,
+    .mobile-main-view #nice_colors {
+      display: none !important;
     }
   
     .mobile-main-view .middle-column {
@@ -55,6 +61,12 @@
       display: block !important;
       flex: 1;
     }
+
+    .mobile-results-view #ugly_colors,
+    .mobile-results-view #nice_colors {
+      display: block !important;
+      flex: 1;
+    }
   
     .mobile-results-view .mobile-back-btn {
       display: block;
@@ -69,7 +81,7 @@
       display: flex;
       justify-content: space-between;
       gap: 10px;
-      margin-top: 60px; /* Space for back button */
+      margin-top: 20px; /* Space for back button */
     }
   }
   

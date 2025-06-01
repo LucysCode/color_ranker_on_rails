@@ -1,7 +1,7 @@
 <%# Middle Column Component %>
 <%# 
   Expected locals from controller:
-  - @color_pair: array with two colors
+  - @hex_color: array with one color
   - @show_pikachu: boolean
   - @image_url: pikachu image URL
   - @max_pairs: maximum pairs allowed
@@ -16,21 +16,12 @@
   <% unless @show_pikachu %>
     <!-- Color Pair Box Display -->
     <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
-      <!-- Left Color Box -->
-      <form method="get" action="<%= rank_color_pairs_path %>">
-        <input type="hidden" name="new_left_color" value="true" />
+      <!-- Color Box -->
+      <form method="get" action="<%= rank_colors_path %>">
+        <input type="hidden" name="new_color" value="true" />
         <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
-          <div class="pair-color-box pair-color-box-left" style="background-color: <%= @color_pair[0] %>;"></div>
-          <p>Hex: <%= @color_pair[0] %></p>
-        </button>
-      </form>
-
-      <!-- Right Color Box -->
-      <form method="get" action="<%= rank_color_pairs_path %>">
-        <input type="hidden" name="new_right_color" value="true" />
-        <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
-          <div class="pair-color-box pair-color-box-right" style="background-color: <%= @color_pair[1] %>;"></div>
-          <p>Hex: <%= @color_pair[1] %></p>
+          <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
+          <p>Hex: <%= @hex_color %></p>
         </button>
       </form>
     </div>
@@ -51,7 +42,7 @@
   <% end %>
 
   <!-- Voting Buttons -->
-  <%= render 'voting_buttons', color_pair: @color_pair %>
+  <%= render 'voting_buttons', hex_color: @hex_color %>
 
   <!-- Navigation Buttons -->
   <%= render 'navigation_buttons' %>
@@ -59,9 +50,9 @@
   <!-- Reset Buttons -->
   <%= render 'reset_buttons' %>
 
-  <!-- Route to Color Ranker page -->
+  <!-- Route to Color Pairs page -->
   <div style="text-align: center; margin: 15px">
-    <%= link_to "Color Ranker", rank_colors_path %>
+    <%= link_to "Color Pairs Ranker", rank_color_pairs_path %>
   </div>
 
   <!-- Flash Messages -->

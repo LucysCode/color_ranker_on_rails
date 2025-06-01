@@ -1,21 +1,26 @@
 Rails.application.routes.draw do
   root "home#index"
-  post "vote", to: "home#vote"
-  post "reset", to: "home#reset"
-  post "reset_ugly", to: "home#reset_ugly"
-  post "reset_nice", to: "home#reset_nice"
-  post "/update_position", to: "home#update_position"
+  # post "vote", to: "home#vote"
+  # post "reset", to: "home#reset"
+  # post "reset_ugly", to: "home#reset_ugly"
+  # post "reset_nice", to: "home#reset_nice"
+  # post "/update_position", to: "home#update_position"
+
+  get "color_ranker/rank_colors"
+  get "/rank_colors", to: "color_ranker#rank_colors"
+  post "vote_color", to: "color_ranker#vote_color"
+  post "reset_colors", to: "color_ranker#reset_colors"
+  post "reset_ugly_colors", to: "color_ranker#reset_ugly_colors"
+  post "reset_nice_colors", to: "color_ranker#reset_nice_colors"
+  post "/color_ranker/update_position", to: "color_ranker#update_position"
 
   get "pairs/rank_color_pairs"
+  get "/rank_color_pairs", to: "pairs#rank_color_pairs"
   post '/vote_pair', to: 'pairs#vote_pair'
   post "reset_pairs", to: "pairs#reset_pairs"
   post "reset_ugly_pairs", to: "pairs#reset_ugly_pairs"
   post "reset_nice_pairs", to: "pairs#reset_nice_pairs"
-  get "/rank_color_pairs", to: "pairs#rank_color_pairs"
   post '/pairs/update_position', to: 'pairs#update_position'
-
-
-
 
   # get "/rank_color_pairs", to: "pages#index"
 

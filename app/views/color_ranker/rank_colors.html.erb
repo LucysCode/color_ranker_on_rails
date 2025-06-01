@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ColorPairsRanker</title>
+    <title>ColorRanker</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "mobile_responsive", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", type: "module", "data-turbo-track": "reload", defer: true %>
-    <%= javascript_include_tag "color_pair_utils", "data-turbo-track": "reload", defer: true %>
-    <%= javascript_include_tag "color_pair_listeners", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_include_tag "color_utils", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_include_tag "color_listeners", "data-turbo-track": "reload", defer: true %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
   </head>
   <body class="mobile-main-view">
-    <h1 style="text-align:center">Welcome to Color Pair Ranker!</h1>
-    <h2 style="text-align:center">Which color pair do you like better?</h2>
-    <p style="text-align:center">Select up to <%= @max_pairs %> ugly pairs and <%= @max_pairs %> great pairs!</p>
+    <h1 style="text-align:center">Welcome to Color Ranker!</h1>
+    <h2 style="text-align:center">Which color do you like better?</h2>
+    <p style="text-align:center">Select up to <%= @max_colors %> ugly colors and <%= @max_colors %> great colors!</p>
     
     <!-- Mobile Back Button -->
     <button class="mobile-back-btn" onclick="showMainView()">← Back</button>
         <div class="main-container" style="display: flex; justify-content: center;">
-      <!-- Ugly Pairs Column -->
-      <%= render 'color_pair_column', 
-          pairs: @ugly_pairs, 
+      <!-- Ugly Colors Column -->
+      <%= render 'color_column', 
+          colors: @ugly_colors, 
           column_type: 'ugly', 
-          title: 'Top Ugly Pairs' %>
+          title: 'Top Ugly Colors' %>
       
       <!-- Middle Column -->
       <%= render 'middle_column' %>
       
-      <!-- Nice Pairs Column -->
-      <%= render 'color_pair_column', 
-          pairs: @nice_pairs, 
+      <!-- Nice Colors Column -->
+      <%= render 'color_column', 
+          colors: @nice_colors, 
           column_type: 'nice', 
-          title: 'Top Nice Pairs' %>
+          title: 'Top Nice Colorrs' %>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
