@@ -12,8 +12,15 @@ class ColorRankerController < ApplicationController
   
     # current_color = session[:current_color] || []
     unless session[:current_color].is_a?(Array) && session[:current_color].size == 2
-      session[:current_color] = generate_unique_color
+      # Only generate a new color if explicitly requested via `params[:new_color]`
+      if params[:new_color] == "true"
+        begin
+          new_color = generate_unique_color
+        end while ColorVote.exists?(hex_color: new_color, session_id: session[:session_id])
+        session[:current_color] = new_color
+      end
     end
+    
     current_color = session[:current_color].is_a?(Array) ? session[:current_color] : [] 
     
     if params[:new_color] == "true"
