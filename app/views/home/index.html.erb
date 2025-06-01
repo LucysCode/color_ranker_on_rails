@@ -12,8 +12,39 @@
   <body>
     <h1 style="text-align:center">Welcome to Color Ranker. You can rank ugly colors and color pairs!</h1>
     <div style="display: flex; justify-content: center; gap: 100px; max-width: 400px; margin: 15px auto;">
-      <%= link_to "Color Ranker", rank_colors_path %>
-      <%= link_to "Color Pairs Ranker", rank_color_pairs_path %>
+
+      <div style="text-align:center">
+        <!-- Color Box Display -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+          <!-- Color Box -->
+          <form method="get" action="<%= rank_colors_path %>">
+            <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+              <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
+            </button>
+          </form>
+        </div>
+        <%= link_to "Color Ranker", rank_colors_path %>
+      </div>
+
+      <div style="text-align:center">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+          <!-- Left Color Box -->
+          <form method="get" action="<%= rank_color_pairs_path %>">
+          <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+              <div class="pair-color-box pair-color-box-left" style="background-color: <%= @color_pair[0] %>;"></div>
+          </button>
+          </form>
+
+          <!-- Right Color Box -->
+          <form method="get" action="<%= rank_color_pairs_path %>">
+          <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+              <div class="pair-color-box pair-color-box-right" style="background-color: <%= @color_pair[1] %>;"></div>
+          </button>
+          </form>
+        </div>
+        <%= link_to "Color Pairs Ranker", rank_color_pairs_path %>
+      </div>
+
     </div>
   </body>
 </html>

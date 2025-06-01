@@ -1,0 +1,13 @@
+<div class="middle-column" style="flex: 1; text-align: center;">
+    <!-- Color Box Display -->
+    <div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+      <!-- Color Box -->
+      <form method="get" action="<%= rank_colors_path %>">
+        <input type="hidden" name="new_color" value="true" />
+        <button type="submit" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+          <div class="main-color-box" style="background-color: <%= @hex_color %>;"></div>
+          <p>Hex: <%= @hex_color %></p>
+        </button>
+      </form>
+    </div>
+</div>

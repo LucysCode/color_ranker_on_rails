@@ -15,12 +15,14 @@ class PairsController < ApplicationController
       session[:current_color_pair] = generate_unique_color_pair
     end
     current_pair = session[:current_color_pair].is_a?(Array) ? session[:current_color_pair] : [] 
+
     
     if params[:new_pair] == "true"
       if ColorPairVote.where(session_id: session[:session_id]).count >= 16**12
         @message = "Woah you went through 281,474,976,710,656 colors pairs? That's some serious dedication."
+        @left_color = color_pair[0]
+        @right_color - color_pair[1]
         @color_pair = ["#FFFFFF", "#FFFFFF"]
-
         # return
       elsif ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS &&
             ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
@@ -28,7 +30,6 @@ class PairsController < ApplicationController
         @show_pikachu = true
         @message = "You ranked all the pairs! Wanna reset? :)"
         @color_pair = ["#FFFFFF", "#FFFFFF"]
-
         # return
 
       else
@@ -42,9 +43,11 @@ class PairsController < ApplicationController
         if params[:last_vote] == "ugly" &&
           ColorPairVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_PAIRS
           @message = "You selected the maximum ugly pairs! Want to select more great pairs?"
+
        elsif params[:last_vote] == "nice" &&
           ColorPairVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_PAIRS
           @message = "You selected the maximum nice pairs! Want to select more ugly pairs?"
+
        end
 
       end
@@ -104,7 +107,6 @@ class PairsController < ApplicationController
         @message = "You ranked all the pairs! Wanna reset? :)"
         @color_pair = ["#FFFFFF", "#FFFFFF"]
       end
-
     end
   end
 

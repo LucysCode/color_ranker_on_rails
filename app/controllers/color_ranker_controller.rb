@@ -26,6 +26,8 @@ class ColorRankerController < ApplicationController
     if params[:new_color] == "true"
       if ColorVote.where(session_id: session[:session_id]).count >= 16**12
         @message = "Woah you went through 16,777,216 colors? That's some serious dedication."
+        @left_color = color_pair[0]
+        @right_color - color_pair[1]
         @hex_color = ["#FFFFFF"]
 
         # return

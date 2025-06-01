@@ -1,10 +1,6 @@
 Rails.application.routes.draw do
   root "home#index"
-  # post "vote", to: "home#vote"
-  # post "reset", to: "home#reset"
-  # post "reset_ugly", to: "home#reset_ugly"
-  # post "reset_nice", to: "home#reset_nice"
-  # post "/update_position", to: "home#update_position"
+  get "/index", to: "home#index"
 
   get "color_ranker/rank_colors"
   get "/rank_colors", to: "color_ranker#rank_colors"
