@@ -46,11 +46,6 @@
     <%= link_to "Color Ranker", rank_colors_path %>
   </div>
 
-  <!-- Route to Home page -->
-  <div style="text-align: center; margin: 15px">
-    <%= link_to "Home", index_path %>
-  </div>
-
   <!-- Flash Messages -->
   <% if flash[:notice] || @message %>
     <div id="<%= flash[:notice] ? 'flash-notice' : 'custom-message' %>" class="flash-message" style="color: red;">

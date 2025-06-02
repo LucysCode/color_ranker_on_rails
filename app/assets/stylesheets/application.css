@@ -1,6 +1,6 @@
 .main-color-box {
-  width: 300px;
-  height: 200px;
+  width: 250px;
+  height: 160px;
   border: 1px solid black;
   border-radius: 15px;
   margin: 0px auto;
@@ -9,16 +9,16 @@
 }
 
 .side-color-box {
-  width: 180px;
-  height: 120px;
+  width: 130px;
+  height: 86px;
   border: 1px solid black;
   border-radius: 10px;
   display: flex;
 }
 
 .pair-color-box {
-  width: 150px;
-  height: 200px;
+  width: 125px;
+  height: 160px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   border-radius: 0px;
@@ -34,6 +34,7 @@
   border-right: 0px solid black;
   border-left: 1px solid black;
 } 
+
 .pair-color-box-right {
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -42,12 +43,14 @@
 }
 
 .pair-side-color-box {
-  width: 90px;
-  height: 120px;
+  width: 65px;
+  height: 86px;
   border: 1px solid black;
   border-radius: 0px;
   display: block;
+  margin: 0px;
 }
+
 .pair-side-color-left {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -63,11 +66,11 @@
 }
 
 .meme-box {
-  width: 300px;
-  height: 196.5px;
+  width: 250px;
+  height: 133.5px;
   border: 1px solid black;
   border-radius: 15px;
-  margin: 0px auto;
+  margin: 10px auto;
   display: block;
 }
 
@@ -76,12 +79,12 @@
 }
 
 button {
-  margin-top: 15px;
+  margin-top: 10px;
   margin-left: 2px;
   margin-right: 2px;
-  padding: 10px 16px;
-  font-size: 16px;
-  border-radius: 15px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 12px;
   border: 1px solid #555555;
 }
 

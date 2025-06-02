@@ -1,7 +1,7 @@
 <%# Navigation Buttons Partial %>
 
 <!-- Button to get a new pair -->
-<div style="display: flex; justify-content: center; margin: 15px 0;">
+<div style="display: flex; justify-content: center; margin: 0px 0;">
   <form method="get" action="<%= rank_color_pairs_path %>">
     <input type="hidden" name="new_pair" value="true" />
     <button type="submit">New Color Pair</button>
@@ -9,7 +9,7 @@
 </div>
 
 <!-- Buttons to generate new left or right color -->
-<div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 15px auto;">
+<div style="display: flex; justify-content: center; gap: 12px; max-width: 400px; margin: 0px auto;">
   <form method="get" action="<%= rank_color_pairs_path %>" style="flex: 1;">
     <input type="hidden" name="new_left_color" value="true" />
     <button type="submit" style="width: 100%;">&nbsp;New Left Color&nbsp;</button>

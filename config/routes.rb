@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  root "home#index"
+  require 'devise'
+
+  devise_for :users
+
+  # root "home#index"
+  root to: "home#index"
   get "/index", to: "home#index"
 
   get "color_ranker/rank_colors"

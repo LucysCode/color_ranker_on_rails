@@ -2,27 +2,27 @@
 @media (max-width: 768px) {
     .mobile-view-results-btn {
       display: block;
-      width: 200px;
-      margin: 15px auto;
+      width: 125px;
+      margin: 0px auto;
       background-color: #4CAF50;
       color: white;
       border: none;
       padding: 12px 20px;
-      font-size: 16px;
+      font-size: 14px;
       border-radius: 25px;
       cursor: pointer;
     }
   
     .mobile-back-btn {
       display: none;
-      position: sticky;
+      position: static;
       top: 177px;
       margin: 15px auto;
       background-color: #2196F3;
       color: white;
       border: none;
       padding: 12px 20px;
-      font-size: 16px;
+      font-size: 14px;
       border-radius: 25px;
       cursor: pointer;
       z-index: 1000;
