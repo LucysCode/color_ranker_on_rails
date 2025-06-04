@@ -1,35 +1,89 @@
-<h1>My Votes History</h1>
+<h1 style="text-align: center;">My Votes History</h1>
 
-<section>
-  <h2>Color Ranker History</h2>
-  <p><strong>Ugly Color Votes:</strong> <%= @ugly_color_votes.count %></p>
-  <ul>
-    <% @ugly_color_votes.each do |vote| %>
-      <li><%= vote.hex_color %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
-    <% end %>
-  </ul>
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; flex-wrap: wrap;">
 
-  <p><strong>Nice Color Votes:</strong> <%= @nice_color_votes.count %></p>
-  <ul>
-    <% @nice_color_votes.each do |vote| %>
-      <li><%= vote.hex_color %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
-    <% end %>
-  </ul>
-</section>
+	<!-- Left Column: Color Ranker History -->
+	<section style="flex: 1; min-width: 300px;">
+		<h2 style="text-align: center;">Color Ranker History</h2>
+		<div style="display: flex; gap: 0px; justify-content: space-between;">
+			
+			<!-- Ugly Colors -->
+			<div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+				<h3 style="margin-bottom: 8px;">Ugly Colors (<%= @ugly_color_votes.count %>)</h3>
+				<ul style="padding: 0;">
+					<% @ugly_color_votes.each do |vote| %>
+						<li style="display: flex; flex-direction: column; align-items: center; margin-bottom: 10px;">
+							<div class="side-color-box" style="background-color:<%= vote.hex_color %>; border: 1px solid #000;"></div>
+							<p style="font-size: 10px; margin: 4px 0 0;">Hex: <%= vote.hex_color %></p>
+						</li>
+					<% end %>
+				</ul>
+			</div>
 
-<section style="margin-top: 40px;">
-  <h2>Color Pairs Ranker History</h2>
-  <p><strong>Ugly Pairs Votes:</strong> <%= @ugly_color_pair_votes.count %></p>
-  <ul>
-    <% @ugly_color_pair_votes.each do |vote| %>
-      <li><%= "#{vote.left_color} &amp; #{vote.right_color}" %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
-    <% end %>
-  </ul>
+			<!-- Nice Colors -->
+			<div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+				<h3 style="margin-bottom: 8px;">Nice Colors (<%= @nice_color_votes.count %>)</h3>
+				<ul style="padding: 0;">
+					<% @nice_color_votes.each do |vote| %>
+						<li style="display: flex; flex-direction: column; align-items: center; margin-bottom: 10px;">
+							<div class="side-color-box" style="background-color:<%= vote.hex_color %>; border: 1px solid #000;"></div>
+							<p style="font-size: 10px; margin: 4px 0 0;">Hex: <%= vote.hex_color %></p>
+						</li>
+					<% end %>
+				</ul>
+			</div>
 
-  <p><strong>Nice Pairs Votes:</strong> <%= @nice_color_pair_votes.count %></p>
-  <ul>
-    <% @nice_color_pair_votes.each do |vote| %>
-      <li><%= "#{vote.left_color} &amp; #{vote.right_color}" %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
-    <% end %>
-  </ul>
-</section>
+		</div>
+	</section>
+
+
+	<!-- Right Column: Color Pairs Ranker History -->
+	<section style="flex: 1; min-width: 300px;">
+		<h2 style="text-align: center;">Color Pairs Ranker History</h2>
+		<div style="display: flex; gap: 20px; justify-content: space-between;">
+			
+			<!-- Ugly Pairs -->
+			<div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+				<h3 style="margin-bottom: 8px;">Ugly Pairs (<%= @ugly_color_pair_votes.count %>)</h3>
+				<ul style="list-style: none; padding: 0;">
+					<% @ugly_color_pair_votes.each do |vote| %>
+						<li style="margin-bottom: 10px;">
+							<div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+								<div style="display: flex; flex-direction: column; align-items: center;">
+									<div class="pair-side-color-box pair-side-color-left" style="background-color:<%= vote.left_color %>;"></div>
+									<p style="margin: 4px 0 0 0; font-size: 8px;">Hex: <%= vote.left_color %></p>
+								</div>
+								<div style="display: flex; flex-direction: column; align-items: center;">
+									<div class="pair-side-color-box pair-side-color-right" style="background-color:<%= vote.right_color %>;"></div>
+									<p style="margin: 4px 0 0 0; font-size: 8px;">Hex: <%= vote.right_color %></p>
+								</div>
+							</div>
+						</li>
+					<% end %>
+				</ul>
+			</div>
+
+			<!-- Nice Pairs -->
+			<div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+				<h3 style="margin-bottom: 8px;">Nice Pairs (<%= @nice_color_pair_votes.count %>)</h3>
+				<ul style="list-style: none; padding: 0;">
+					<% @nice_color_pair_votes.each do |vote| %>
+						<li style="margin-bottom: 10px;">
+							<div style="display: flex; justify-content: center; align-items: center; gap: 0px;">
+								<div style="display: flex; flex-direction: column; align-items: center;">
+									<div class="pair-side-color-box pair-side-color-left" style="background-color:<%= vote.left_color %>;"></div>
+									<p style="margin: 4px 0 0 0; font-size: 8px;">Hex: <%= vote.left_color %></p>
+								</div>
+								<div style="display: flex; flex-direction: column; align-items: center;">
+									<div class="pair-side-color-box pair-side-color-right" style="background-color:<%= vote.right_color %>;"></div>
+									<p style="margin: 4px 0 0 0; font-size: 8px;">Hex: <%= vote.right_color %></p>
+								</div>
+							</div>
+						</li>
+					<% end %>
+				</ul>
+			</div>
+
+
+		</div>
+	</section>
