@@ -123,6 +123,7 @@ class ColorRankerController < ApplicationController
   
 
   def vote_color
+
     hex_color = session[:current_color]
     is_ugly = params[:vote_type] == "ugly"
     is_nice = params[:vote_type] == "nice"
@@ -145,13 +146,34 @@ class ColorRankerController < ApplicationController
       )
       position = position_scope.count
   
-      ColorVote.create(
-        hex_color: hex_color,
-        is_ugly: is_ugly,
-        is_nice: is_nice,
-        session_id: session[:session_id],
-        position: position
-      )
+      # ColorVote.create(
+      #   hex_color: hex_color,
+      #   is_ugly: is_ugly,
+      #   is_nice: is_nice,
+      #   session_id: session[:session_id],
+      #   position: position
+      # )
+
+      # Create vote for logged-in user or guest
+      if current_user
+        ColorVote.create!(
+          hex_color: hex_color,
+          is_ugly: is_ugly,
+          is_nice: is_nice,
+          user: current_user,
+          session_id: session[:session_id],
+          position: position
+        )
+      else
+        ColorVote.create!(
+          hex_color: hex_color,
+          is_ugly: is_ugly,
+          is_nice: is_nice,
+          session_id: session[:session_id],
+          position: position
+        )
+      end
+
     end    
   
     Rails.logger.info "Created vote: #{ColorVote.last.inspect}" if ColorVote.last&.session_id == session[:session_id]

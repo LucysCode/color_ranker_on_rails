@@ -160,14 +160,39 @@ class PairsController < ApplicationController
       )
       position = position_scope.count
   
-      ColorPairVote.create(
-        left_color: left_color,
-        right_color: right_color,
-        is_ugly: is_ugly,
-        is_nice: is_nice,
-        session_id: session[:session_id],
-        position: position
-      )
+      # ColorPairVote.create(
+      #   left_color: left_color,
+      #   right_color: right_color,
+      #   is_ugly: is_ugly,
+      #   is_nice: is_nice,
+      #   session_id: session[:session_id],
+      #   position: position
+      # )
+
+      # Create vote for logged-in user or guest
+      if current_user
+        ColorPairVote.create!(
+          left_color: left_color,
+          right_color: right_color,
+          is_ugly: is_ugly,
+          is_nice: is_nice,
+          user: current_user,
+          session_id: session[:session_id],
+          position: position,
+          color_pair: "#{left_color},#{right_color}"
+        )
+      else
+        ColorPairVote.create!(
+          left_color: left_color,
+          right_color: right_color,
+          is_ugly: is_ugly,
+          is_nice: is_nice,
+          session_id: session[:session_id],
+          position: position,
+          color_pair: "#{left_color},#{right_color}"
+        )
+      end
+
     end    
   
     Rails.logger.info "Created vote: #{ColorPairVote.last.inspect}" if ColorPairVote.last&.session_id == session[:session_id]

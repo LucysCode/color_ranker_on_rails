@@ -1,0 +1,35 @@
+<h1>My Votes History</h1>
+
+<section>
+  <h2>Color Ranker History</h2>
+  <p><strong>Ugly Color Votes:</strong> <%= @ugly_color_votes.count %></p>
+  <ul>
+    <% @ugly_color_votes.each do |vote| %>
+      <li><%= vote.hex_color %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
+    <% end %>
+  </ul>
+
+  <p><strong>Nice Color Votes:</strong> <%= @nice_color_votes.count %></p>
+  <ul>
+    <% @nice_color_votes.each do |vote| %>
+      <li><%= vote.hex_color %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
+    <% end %>
+  </ul>
+</section>
+
+<section style="margin-top: 40px;">
+  <h2>Color Pairs Ranker History</h2>
+  <p><strong>Ugly Pairs Votes:</strong> <%= @ugly_color_pair_votes.count %></p>
+  <ul>
+    <% @ugly_color_pair_votes.each do |vote| %>
+      <li><%= "#{vote.left_color} &amp; #{vote.right_color}" %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
+    <% end %>
+  </ul>
+
+  <p><strong>Nice Pairs Votes:</strong> <%= @nice_color_pair_votes.count %></p>
+  <ul>
+    <% @nice_color_pair_votes.each do |vote| %>
+      <li><%= "#{vote.left_color} &amp; #{vote.right_color}" %> (voted at <%= vote.created_at.strftime("%b %d, %Y %H:%M") %>)</li>
+    <% end %>
+  </ul>
+</section>

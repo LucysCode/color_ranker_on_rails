@@ -34,6 +34,7 @@
       <div style="position: absolute; top: 10px; right: 10px;">
         <% if user_signed_in? %>
           Hello, <%= current_user.username %> |
+          <%= link_to "My Votes", my_votes_path %> |
           <%= link_to 'Logout', destroy_user_session_path, data: { turbo_method: :delete } %>
 
         <% else %>

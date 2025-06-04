@@ -11,4 +11,7 @@ class ColorVote < ApplicationRecord
         errors.add(:base, "A color can't be both ugly and nice.")
       end
     end
+
+    belongs_to :user, optional: true
+
 end
