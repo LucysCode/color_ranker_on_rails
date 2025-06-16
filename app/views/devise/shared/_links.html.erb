@@ -7,7 +7,8 @@
 <% end %>
 
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-  <%= link_to "Forgot your password?", new_password_path(resource_name) %><br />
+  <!-- <%= link_to "Forgot your password?", new_password_path(resource_name) %><br /> -->
+  <p style="color: red">[Forgot your password?] Button removed for security until user data can be stored securely.</p>
 <% end %>
 
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
