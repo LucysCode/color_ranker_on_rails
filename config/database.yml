@@ -25,10 +25,11 @@ test:
 # is mounted as a persistent Docker volume in config/deploy.yml.
 
 production:
-  url: <%= ENV['DATABASE_URL'] %>
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  primary:
+    url: <%= ENV['DATABASE_URL'] %>
+    adapter: postgresql
+    encoding: unicode
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 
 ## Code for SQLite3 in production. Replaced with PostgreSQL above
