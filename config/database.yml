@@ -24,12 +24,28 @@ test:
 # Store production database in the storage/ directory, which by default
 # is mounted as a persistent Docker volume in config/deploy.yml.
 
+# For use with PostgreSQL (neon.tech)
 production:
   primary:
     url: <%= ENV['DATABASE_URL'] %>
     adapter: postgresql
     encoding: unicode
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+  cable:
+    url: <%= ENV['DATABASE_URL'] %>
+    adapter: postgresql
+    migrations_paths: db/cable_migrate
+
+  cache:
+    url: <%= ENV['DATABASE_URL'] %>
+    adapter: postgresql
+    migrations_paths: db/cache_migrate
+
+  queue:
+    url: <%= ENV['DATABASE_URL'] %>
+    adapter: postgresql
+    migrations_paths: db/queue_migrate
 
 
 ## Code for SQLite3 in production. Replaced with PostgreSQL above
