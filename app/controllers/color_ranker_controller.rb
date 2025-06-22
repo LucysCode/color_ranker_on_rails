@@ -223,5 +223,8 @@ class ColorRankerController < ApplicationController
   
     new_color
   end
+
+
+
 end
 

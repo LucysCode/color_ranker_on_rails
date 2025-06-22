@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   # My Votes
   get "/my_votes", to: "users#my_votes", as: :my_votes
 
+  # Delete for color votes
+resources :color_votes, only: [:create, :destroy]
+
 
   # get "/rank_color_pairs", to: "pages#index"
 

@@ -13,7 +13,7 @@
     <ul id="<%= column_type %>_colors_list" style="list-style:none; padding:0;">
 
       <% colors.each do |color_vote| %>
-        <li data-id="<%= color_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
+        <li id="<%= dom_id(color_vote) %>" data-id="<%= color_vote.id %>" style="flex-direction: column; margin: 10px 0; cursor: grab; text-align: center; margin-bottom: 30px;">
 
           <span style="font-weight: bold;">&nbsp;Rank:&nbsp;<span class="position-number" style="font-weight: normal;"><%= color_vote.position.to_i + 1 %></span></span>
 
@@ -26,6 +26,13 @@
             </div>
             
           </div>
+
+          <!-- Delete button for color vote -->
+          <%= button_to "Delete",
+            color_vote_path(color_vote),
+            method: :delete,
+            form:  { data: { turbo: "false" } },   # ← disables Turbo Drive
+            class: "delete-btn" %>
 
         </li>
       <% end %>
