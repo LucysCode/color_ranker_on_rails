@@ -31,6 +31,7 @@ Rails.application.routes.draw do
 
   # Delete for color votes
 resources :color_votes, only: [:create, :destroy]
+resources :color_pair_votes, only: [:create, :destroy]
 
 
   # get "/rank_color_pairs", to: "pages#index"

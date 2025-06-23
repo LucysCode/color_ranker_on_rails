@@ -181,7 +181,6 @@ class ColorRankerController < ApplicationController
     head :ok
   end
     
-  
 
   def reset_colors
     if ColorVote.exists?(session_id: session[:session_id])
