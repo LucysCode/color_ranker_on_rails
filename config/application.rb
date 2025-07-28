@@ -2,6 +2,9 @@ require_relative "boot"
 
 require "rails/all"
 
+# This will cause a merge conflict with PRs 1 and 2, simulating as if someone else made changes to main
+# for one of my commits that were rebased on older version of main
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
