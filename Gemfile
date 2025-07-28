@@ -1,16 +1,18 @@
 source "https://rubygems.org"
 
-gem 'devise'
+gem "devise"
 
 # Use sqlite3 as the database for Active Record
 group :development, :test do
-  gem 'sqlite3', '>= 2.1'
+  gem "sqlite3", ">= 2.1"
 end
 
 # Use pg for PostgreSQL (Neon) in production
 group :production do
-  gem 'pg', '~> 1.5'
+  gem "pg", "~> 1.5"
 end
+
+
 
 
 ruby "3.4.1"
@@ -75,3 +77,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "activeagent", "~> 0.4.1"

@@ -9,7 +9,7 @@ class ColorRankerController < ApplicationController
     @ugly_colors = ColorVote.where(session_id: session[:session_id], is_ugly: true).order(:position)
     @nice_colors = ColorVote.where(session_id: session[:session_id], is_nice: true).order(:position)
     @max_colors = MAX_COLORS
-  
+
     # current_color = session[:current_color] || []
     unless session[:current_color].is_a?(Array) && session[:current_color].size == 2
       # Only generate a new color if explicitly requested via `params[:new_color]`
@@ -20,15 +20,15 @@ class ColorRankerController < ApplicationController
         session[:current_color] = new_color
       end
     end
-    
-    current_color = session[:current_color].is_a?(Array) ? session[:current_color] : [] 
-    
+
+    current_color = session[:current_color].is_a?(Array) ? session[:current_color] : []
+
     if params[:new_color] == "true"
       if ColorVote.where(session_id: session[:session_id]).count >= 16**12
         @message = "Woah you went through 16,777,216 colors? That's some serious dedication."
         @left_color = color_pair[0]
         @right_color - color_pair[1]
-        @hex_color = ["#FFFFFF"]
+        @hex_color = [ "#FFFFFF" ]
 
         # return
       elsif ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS &&
@@ -36,7 +36,7 @@ class ColorRankerController < ApplicationController
         @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
         @show_pikachu = true
         @message = "You ranked all the colors! Wanna reset? :)"
-        @hex_color = ["#FFFFFF"]
+        @hex_color = [ "#FFFFFF" ]
 
         # return
 
@@ -44,25 +44,25 @@ class ColorRankerController < ApplicationController
         begin
           new_color = generate_unique_color
         end while ColorVote.exists?(hex_color: new_color, session_id: session[:session_id])
-        
+
         session[:current_color] = new_color
         @hex_color = new_color
 
         if params[:last_vote] == "ugly" &&
           ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS
           @message = "You selected the maximum ugly colors! Want to select more great colors?"
-       elsif params[:last_vote] == "nice" &&
+        elsif params[:last_vote] == "nice" &&
           ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
           @message = "You selected the maximum nice colors! Want to select more ugly colors?"
-       end
+        end
 
       end
-  # Edit
+    # Edit
     elsif params[:new_color] == "true"
       if ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS &&
          ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
 
-        @hex_color = ["#FFFFFF"]
+        @hex_color = [ "#FFFFFF" ]
         @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
         @show_pikachu = true
         @message = "You ranked all the colors! Wanna reset? :)"
@@ -91,7 +91,7 @@ class ColorRankerController < ApplicationController
         @image_url = "https://i.kym-cdn.com/entries/icons/facebook/000/027/475/Screen_Shot_2018-10-25_at_11.02.15_AM.jpg"
         @show_pikachu = true
         @message = "You ranked all the colors! Wanna reset? :)"
-        @hex_color = ["#FFFFFF"]
+        @hex_color = [ "#FFFFFF" ]
       end
 
     end
@@ -120,21 +120,20 @@ class ColorRankerController < ApplicationController
 
     head :ok
   end
-  
+
 
   def vote_color
-
     hex_color = session[:current_color]
     is_ugly = params[:vote_type] == "ugly"
     is_nice = params[:vote_type] == "nice"
-  
+
     # Prevent going over the vote limit
     if is_ugly && ColorVote.where(session_id: session[:session_id], is_ugly: true).count >= MAX_UGLY_COLORS
       head :forbidden and return
     elsif is_nice && ColorVote.where(session_id: session[:session_id], is_nice: true).count >= MAX_NICE_COLORS
       head :forbidden and return
     end
-  
+
     unless ColorVote.exists?(
       hex_color: hex_color,
       session_id: session[:session_id]
@@ -145,7 +144,7 @@ class ColorRankerController < ApplicationController
         is_nice: is_nice
       )
       position = position_scope.count
-  
+
       # ColorVote.create(
       #   hex_color: hex_color,
       #   is_ugly: is_ugly,
@@ -174,13 +173,13 @@ class ColorRankerController < ApplicationController
         )
       end
 
-    end    
-  
+    end
+
     Rails.logger.info "Created vote: #{ColorVote.last.inspect}" if ColorVote.last&.session_id == session[:session_id]
-  
+
     head :ok
   end
-    
+
 
   def reset_colors
     if ColorVote.exists?(session_id: session[:session_id])
@@ -215,15 +214,11 @@ class ColorRankerController < ApplicationController
       new_color = RandomColor.random_color
     end while (
       ColorVote.exists?(
-        ["(left_color = :color OR right_color = :color) AND session_id = :session_id",
-         { color: new_color, session_id: session[:session_id] }]
+        [ "(left_color = :color OR right_color = :color) AND session_id = :session_id",
+         { color: new_color, session_id: session[:session_id] } ]
       ) || exclude.include?(new_color)
     )
-  
+
     new_color
   end
-
-
-
 end
-
