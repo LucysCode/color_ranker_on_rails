@@ -13,5 +13,4 @@ class ColorVote < ApplicationRecord
     end
 
     belongs_to :user, optional: true
-
 end
