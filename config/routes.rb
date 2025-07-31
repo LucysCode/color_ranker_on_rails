@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # For User Login
-  require 'devise'
+  require "devise"
 
   devise_for :users
 
@@ -20,15 +20,27 @@ Rails.application.routes.draw do
   # Pairs
   get "pairs/rank_color_pairs"
   get "/rank_color_pairs", to: "pairs#rank_color_pairs"
-  post '/vote_pair', to: 'pairs#vote_pair'
+  post "/vote_pair", to: "pairs#vote_pair"
   post "reset_pairs", to: "pairs#reset_pairs"
   post "reset_ugly_pairs", to: "pairs#reset_ugly_pairs"
   post "reset_nice_pairs", to: "pairs#reset_nice_pairs"
-  post '/pairs/update_position', to: 'pairs#update_position'
+  post "/pairs/update_position", to: "pairs#update_position"
 
   # My Votes
   get "/my_votes", to: "users#my_votes", as: :my_votes
 
+# Delete for color votes
+resources :color_votes, only: [ :create, :destroy ]
+resources :color_pair_votes, only: [ :create, :destroy ]
+
+  # config/routes.rb
+  # resources :color_votes do
+  #   collection { patch :sort }            # /color_votes/sort
+  # end
+
+  # resources :color_pair_votes do
+  #   collection { patch :sort }            # /color_pair_votes/sort
+  # end
 
   # get "/rank_color_pairs", to: "pages#index"
 

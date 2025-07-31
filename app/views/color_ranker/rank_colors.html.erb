@@ -13,28 +13,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
   </head>
-  
+
   <body class="mobile-main-view">
     <h3 style="text-align:center">Welcome to Color Ranker!</h3>
     <p style="text-align:center">Which color do you like better?</p>
     <p style="text-align:center">Select up to <%= @max_colors %> ugly colors and <%= @max_colors %> great colors!</p>
-    
+
     <!-- Mobile Back Button -->
     <button class="mobile-back-btn" onclick="showMainView()">← Back</button>
         <div class="main-container" style="display: flex; justify-content: center;">
       <!-- Ugly Colors Column -->
-      <%= render 'color_column', 
-          colors: @ugly_colors, 
-          column_type: 'ugly', 
+      <%= render 'color_column',
+          colors: @ugly_colors,
+          column_type: 'ugly',
           title: 'Top Ugly Colors' %>
-      
+
       <!-- Middle Column -->
       <%= render 'middle_column' %>
-      
+
       <!-- Nice Colors Column -->
-      <%= render 'color_column', 
-          colors: @nice_colors, 
-          column_type: 'nice', 
+      <%= render 'color_column',
+          colors: @nice_colors,
+          column_type: 'nice',
           title: 'Top Nice Colorrs' %>
     </div>
 

@@ -6,5 +6,4 @@ class User < ApplicationRecord
 
   has_many :color_votes
   has_many :color_pair_votes
-         
 end

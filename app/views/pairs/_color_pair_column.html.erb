@@ -27,6 +27,13 @@
               <p style="margin: 4px 0 0 0; font-size: 8px;">Hex: <%= color_pair_vote.right_color %></p>
             </div>
           </div>
+
+          <%= button_to "Delete",
+            color_pair_vote_path(color_pair_vote),
+            method: :delete,
+            form:  { data: { turbo: "false" } },
+            class: "delete-btn" %>
+
         </li>
       <% end %>
     </ul>
