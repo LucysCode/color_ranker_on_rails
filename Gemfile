@@ -78,4 +78,4 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "activeagent", "~> 0.4.1"
+gem "activeagent", "~> 0.4.3"
