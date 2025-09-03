@@ -9,7 +9,7 @@ end
 
 # Use pg for PostgreSQL (Neon) in production
 group :production do
-  gem "pg", "~> 1.5"
+  gem "pg", "~> 1.6"
 end
 
 
